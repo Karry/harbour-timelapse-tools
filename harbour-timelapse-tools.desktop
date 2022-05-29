@@ -1,0 +1,17 @@
+[Desktop Entry]
+Type=Application
+
+X-Nemo-Application-Type=silica-qt5
+
+Icon=harbour-timelapse-tools
+Exec=harbour-timelapse-tools
+
+Name=TimeLapse Tools
+
+[X-HarbourBackup]
+BackupPathList=.local/share/cz.karry.timelapse/TimeLapseTools/:.config/cz.karry.timelapse/TimeLapseTools/
+
+[X-Sailjail]
+Permissions=Internet;Audio;RemovableMedia;Documents
+OrganizationName=cz.karry.timelapse
+ApplicationName=TimeLapseTools

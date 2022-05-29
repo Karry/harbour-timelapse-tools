@@ -1,2 +1,1 @@
-# harbour-timelapse-tools
-TimeLapse tools for Sailfish OS
+# TimeLapse tools for Sailfish OS
