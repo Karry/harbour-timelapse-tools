@@ -12,7 +12,13 @@ endif()
 set(ImageMagick_LIBRARY
     ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-6.Q16.so
     ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-6.Q16.so.9
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-6.Q16.so.9.0.0)
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-6.Q16.so.9.0.0
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickCore-6.Q16.so
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickCore-6.Q16.so.7
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickCore-6.Q16.so.7.0.0
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickWand-6.Q16.so
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickWand-6.Q16.so.7
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickWand-6.Q16.so.7.0.0)
 
 ExternalProject_Add(ImageMagick
     URL "${CMAKE_CURRENT_SOURCE_DIR}/ImageMagick-6.9.12-50.tar.gz"
@@ -73,7 +79,9 @@ add_dependencies(vidstab::vidstab vidstab)
 # v4l
 
 set(v4lUtils_LIBRARY
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libv4l2.so.0
     ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libv4l2.so.0.0.0
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libv4lconvert.so.0
     ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libv4lconvert.so.0.0.0)
 
 ExternalProject_Add(v4lUtils
@@ -100,7 +108,9 @@ add_dependencies(v4lUtils::v4lUtils v4lUtils)
 # GPhoto2
 
 set(GPhoto2_LIBRARY
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libgphoto2_port.so.12
     ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libgphoto2_port.so.12.0.0
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libgphoto2.so.6
     ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libgphoto2.so.6.2.0)
 
 # TODO: add libusb, libjpeg, libgd, libltdl

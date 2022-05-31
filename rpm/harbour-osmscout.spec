@@ -10,7 +10,7 @@ Name:       harbour-timelapse-tools
 
 # don't setup rpm requires
 # list here all the libraries your RPM installs
-%define __requires_exclude ^ld-linux$
+%define __requires_exclude ^ld-linux|libMagick*|libgphoto2*|libtimelapse.so|libv4l*|libvidstab.so.*$
 
 # << macros
 
