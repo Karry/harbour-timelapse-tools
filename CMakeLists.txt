@@ -37,6 +37,7 @@ include(CheckPrototypeDefinition)
 include(CheckCCompilerFlag)
 include(CheckTypeSize)
 include(CheckFunctionExists)
+include(ExternalProject)
 
 # ==================================================================================================
 # Find dependencies
@@ -53,6 +54,8 @@ find_package( Qt5 ${QT_MIN_VERSION}
 )
 find_package(Qt5LinguistTools)
 find_package(SailfishApp) # https://github.com/sailfish-sdk/libsailfishapp
+
+add_subdirectory(dependencies)
 
 # ==================================================================================================
 # Compiler flags
@@ -194,6 +197,7 @@ target_link_libraries(harbour-timelapse-tools
     Qt5::Svg
 
     ${LIBSAILFISHAPP_LIBRARIES}
+    TimeLapse::TimeLapse
 )
 
 # https://github.com/sailfish-sdk/cmakesample/blob/master/CMakeLists.txt
@@ -205,6 +209,12 @@ DESTINATION share/${HARBOUR_APP_NAME})
 
 install(FILES ${TRANSLATION_QM_FILES}
 DESTINATION share/${HARBOUR_APP_NAME}/translations)
+
+message(STATUS "DEP_LIBS: ${DEP_LIBS}")
+
+install(FILES
+    ${DEP_LIBS}
+    DESTINATION share/${HARBOUR_APP_NAME}/lib)
 
 install(FILES harbour-timelapse-tools.desktop
 DESTINATION share/applications)

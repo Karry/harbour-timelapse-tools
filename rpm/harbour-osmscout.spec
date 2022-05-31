@@ -28,6 +28,7 @@ BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(Qt5Svg)
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
+BuildRequires:  libtool-ltdl-devel
 BuildRequires:  cmake
 BuildRequires:  chrpath
 BuildRequires:  desktop-file-utils
