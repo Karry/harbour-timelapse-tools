@@ -149,7 +149,7 @@ ExternalProject_Add(TimeLapse
     )
 
 # older CMake is complaining when include did not exist at configure time
-execute_process(COMMAND mkdir -p "${CMAKE_CURRENT_BINARY_DIR}/installroot/include")
+execute_process(COMMAND mkdir -p "${CMAKE_CURRENT_BINARY_DIR}/installroot/include/ImageMagick-6")
 
 add_library(TimeLapse::TimeLapse INTERFACE IMPORTED GLOBAL)
 target_include_directories(TimeLapse::TimeLapse INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/installroot/include)
