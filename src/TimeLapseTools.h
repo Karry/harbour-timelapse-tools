@@ -18,3 +18,17 @@
 */
 
 #pragma once
+
+#include <TimeLapse/pipeline_cpt.h>
+
+#include <QObject>
+
+class CameraTest: public QObject {
+  Q_OBJECT
+
+public slots :
+  void run();
+
+public:
+  QList <QSharedPointer<timelapse::CaptureDevice>> listDevices();
+};

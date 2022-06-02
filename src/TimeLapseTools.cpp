@@ -18,6 +18,9 @@
 */
 
 #include <harbour-timelapse-tools/private/Version.h>
+#include "IconProvider.h"
+#include "TimeLapseTools.h"
+
 #include <Arguments.h>
 
 #include <TimeLapse/timelapse.h>
@@ -47,7 +50,6 @@
 #endif
 
 #include <sstream>
-#include "IconProvider.h"
 
 #ifndef TIMELAPSE_TOOLS_VERSION_STRING
 static_assert(false, "TIMELAPSE_TOOLS_VERSION_STRING should be defined by build system");
@@ -72,20 +74,33 @@ std::string versionStrings(){
   return ss.str();
 }
 
-QList<QSharedPointer<timelapse::CaptureDevice>> listDevices() {
-  QList<QSharedPointer < timelapse::CaptureDevice>> result;
+void CameraTest::run() {
+  QList<QSharedPointer<timelapse::CaptureDevice>> devices = listDevices();
+  QTextStream verboseOutput(stdout);
+  if (devices.isEmpty()) {
+    verboseOutput << QCoreApplication::translate("main", "No compatible capture device found");
+  } else {
+    verboseOutput << "Found devices: " << endl;
+    for (QSharedPointer<timelapse::CaptureDevice> d : devices) {
+      verboseOutput << "  " << d->toString() << endl;
+    }
+  }
+}
+
+QList<QSharedPointer<timelapse::CaptureDevice>> CameraTest::listDevices() {
+  QList<QSharedPointer<timelapse::CaptureDevice>> result;
 
   QTextStream verboseOutput(stdout);
   QTextStream err(stderr);
 
   QList<timelapse::V4LDevice> v4lDevices = timelapse::V4LDevice::listDevices(&verboseOutput);
-  for (const timelapse::V4LDevice &v4lDev : v4lDevices) {
+  for (const timelapse::V4LDevice &v4lDev: v4lDevices) {
     result.push_back(QSharedPointer<timelapse::CaptureDevice>(new timelapse::V4LDevice(v4lDev)));
   }
 
   try {
     QList<timelapse::Gphoto2Device> gp2devices = timelapse::Gphoto2Device::listDevices(&verboseOutput, &err);
-    for (const timelapse::Gphoto2Device &gp2Dev : gp2devices) {
+    for (const timelapse::Gphoto2Device &gp2Dev: gp2devices) {
       result.push_back(QSharedPointer<timelapse::Gphoto2Device>(new timelapse::Gphoto2Device(gp2Dev)));
     }
   } catch (std::exception &e) {
@@ -93,12 +108,17 @@ QList<QSharedPointer<timelapse::CaptureDevice>> listDevices() {
   }
 
   QList<timelapse::QCameraDevice> qCamDevices = timelapse::QCameraDevice::listDevices(&verboseOutput);
-  for (const timelapse::QCameraDevice &qCamDev : qCamDevices) {
+  for (const timelapse::QCameraDevice &qCamDev: qCamDevices) {
     result.push_back(QSharedPointer<timelapse::QCameraDevice>(new timelapse::QCameraDevice(qCamDev)));
   }
 
+  qDebug() << "all: " << QCameraInfo::availableCameras().size()
+    << "front: " << QCameraInfo::availableCameras(QCamera::FrontFace).size()
+    << "back: " << QCameraInfo::availableCameras(QCamera::BackFace).size();
+
   return result;
 }
+
 
 Q_DECL_EXPORT int main(int argc, char* argv[]) {
 #ifdef Q_WS_X11
@@ -154,16 +174,8 @@ Q_DECL_EXPORT int main(int argc, char* argv[]) {
   view->setSource(SailfishApp::pathTo("qml/main.qml"));
   view->showFullScreen();
 
-  QList<QSharedPointer<timelapse::CaptureDevice>> devices = listDevices();
-  QTextStream verboseOutput(stdout);
-  if (devices.isEmpty()) {
-    verboseOutput << QCoreApplication::translate("main", "No compatible capture device found");
-  } else {
-    verboseOutput << "Found devices: " << endl;
-    for (QSharedPointer<timelapse::CaptureDevice> d : devices) {
-      verboseOutput << "  " << d->toString() << endl;
-    }
-  }
+  CameraTest test;
+  QTimer::singleShot(0, &test, SLOT(run()));
 
   int result=app->exec();
 
