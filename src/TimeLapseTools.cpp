@@ -107,14 +107,16 @@ QList<QSharedPointer<timelapse::CaptureDevice>> CameraTest::listDevices() {
     err << "Can't get Gphoto2 devices. " << QString::fromUtf8(e.what()) << endl;
   }
 
+  {
+    // Sailfish OS did not provide list of cameras until we load at least default one...
+    QCamera camera;
+    camera.load();
+  }
+
   QList<timelapse::QCameraDevice> qCamDevices = timelapse::QCameraDevice::listDevices(&verboseOutput);
   for (const timelapse::QCameraDevice &qCamDev: qCamDevices) {
     result.push_back(QSharedPointer<timelapse::QCameraDevice>(new timelapse::QCameraDevice(qCamDev)));
   }
-
-  qDebug() << "all: " << QCameraInfo::availableCameras().size()
-    << "front: " << QCameraInfo::availableCameras(QCamera::FrontFace).size()
-    << "back: " << QCameraInfo::availableCameras(QCamera::BackFace).size();
 
   return result;
 }
