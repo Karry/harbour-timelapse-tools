@@ -216,6 +216,15 @@ install(FILES
     ${DEP_LIBS}
     DESTINATION share/${HARBOUR_APP_NAME}/lib)
 
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/etc/ImageMagick-6
+    DESTINATION share/${HARBOUR_APP_NAME}/etc)
+
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/lib/ImageMagick-6.9.12
+    DESTINATION share/${HARBOUR_APP_NAME}/lib)
+
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/share/ImageMagick-6
+    DESTINATION share/${HARBOUR_APP_NAME}/share)
+
 install(FILES harbour-timelapse-tools.desktop
 DESTINATION share/applications)
 

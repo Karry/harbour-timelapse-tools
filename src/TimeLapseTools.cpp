@@ -168,6 +168,14 @@ Q_DECL_EXPORT int main(int argc, char* argv[]) {
     std::cerr << "Cannot set locale: \"" << e.what() << "\"" << std::endl;
   }
 
+  timelapse::registerQtMetaTypes();
+
+  // setup ImageMagick, see https://imagemagick.org/script/resources.php
+  // TODO: it is working?
+  qputenv("MAGICK_CONFIGURE_PATH", "/usr/share/harbour-timelapse-tools/etc/ImageMagick-6");
+  qputenv("MAGICK_HOME", "/usr/share/harbour-timelapse-tools");
+  Magick::InitializeMagick(*argv);
+
   QScopedPointer<QQuickView> view(SailfishApp::createView());
   view->rootContext()->setContextProperty("TimeLapseToolsVersionString", TIMELAPSE_TOOLS_VERSION_STRING);
   view->engine()->addImageProvider(QLatin1String("harbour-osmscout"), new IconProvider());
@@ -179,6 +187,7 @@ Q_DECL_EXPORT int main(int argc, char* argv[]) {
 
   int result=app->exec();
 
+  Magick::TerminateMagick();
   return result;
 }
 
