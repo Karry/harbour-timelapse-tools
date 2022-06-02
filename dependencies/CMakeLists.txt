@@ -148,6 +148,10 @@ ExternalProject_Add(TimeLapse
     DEPENDS GPhoto2 v4lUtils vidstab ImageMagick
     )
 
+# older CMake is complaining when include did not exist at configure time
+add_custom_target(depIncludeDir
+    COMMAND mkdir -p "${CMAKE_CURRENT_BINARY_DIR}/installroot/include")
+
 add_library(TimeLapse::TimeLapse INTERFACE IMPORTED GLOBAL)
 target_include_directories(TimeLapse::TimeLapse INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/installroot/include)
 target_link_libraries(TimeLapse::TimeLapse INTERFACE
@@ -159,6 +163,7 @@ target_link_libraries(TimeLapse::TimeLapse INTERFACE
     vidstab::vidstab
     ImageMagick::ImageMagick)  # need the quotes to expand list
 add_dependencies(TimeLapse::TimeLapse TimeLapse)
+add_dependencies(TimeLapse::TimeLapse depIncludeDir)
 
 # ==================================================================================================
 
