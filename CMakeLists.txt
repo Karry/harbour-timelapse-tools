@@ -84,13 +84,13 @@ if (NOT BUILD_TYPE_LOWER STREQUAL "debug")
     include(CheckIPOSupported)
     check_ipo_supported(RESULT result OUTPUT output)
     if(result)
-        set(OSMSCOUT_ENABLE_IPO TRUE)
+        set(TIMELAPSE_ENABLE_IPO TRUE)
     else()
         message(WARNING "IPO is not supported")
-        set(OSMSCOUT_ENABLE_IPO FALSE)
+        set(TIMELAPSE_ENABLE_IPO FALSE)
     endif()
 else()
-    set(OSMSCOUT_ENABLE_IPO FALSE)
+    set(TIMELAPSE_ENABLE_IPO FALSE)
 endif()
 
 # global settings
@@ -180,7 +180,7 @@ add_custom_target(translations ALL DEPENDS ${TRANSLATION_QM_FILES})
 
 add_executable(harbour-timelapse-tools ${SOURCE_FILES} ${HEADER_FILES} ${QML_FILES})
 set_property(TARGET harbour-timelapse-tools PROPERTY CXX_STANDARD 17)
-set_property(TARGET harbour-timelapse-tools PROPERTY INTERPROCEDURAL_OPTIMIZATION ${OSMSCOUT_ENABLE_IPO})
+set_property(TARGET harbour-timelapse-tools PROPERTY INTERPROCEDURAL_OPTIMIZATION ${TIMELAPSE_ENABLE_IPO})
 add_dependencies(harbour-timelapse-tools translations)
 
 target_include_directories(harbour-timelapse-tools PRIVATE
@@ -210,11 +210,13 @@ DESTINATION share/${HARBOUR_APP_NAME})
 install(FILES ${TRANSLATION_QM_FILES}
 DESTINATION share/${HARBOUR_APP_NAME}/translations)
 
-message(STATUS "DEP_LIBS: ${DEP_LIBS}")
-
 install(FILES
     ${DEP_LIBS}
     DESTINATION share/${HARBOUR_APP_NAME}/lib)
+
+install(FILES
+    ${ffmpeg_TAR}
+    DESTINATION share/${HARBOUR_APP_NAME}/bin)
 
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/etc/ImageMagick-6
     DESTINATION share/${HARBOUR_APP_NAME}/etc)
@@ -224,6 +226,14 @@ install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/lib/Image
 
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/share/ImageMagick-6
     DESTINATION share/${HARBOUR_APP_NAME}/share)
+
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/lib/libgphoto2_port
+    DESTINATION share/${HARBOUR_APP_NAME}/lib
+    FILES_MATCHING PATTERN "*.so")
+
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/lib/libgphoto2/2.5.29
+    DESTINATION share/${HARBOUR_APP_NAME}/lib/libgphoto2
+    FILES_MATCHING PATTERN "*.so")
 
 install(FILES harbour-timelapse-tools.desktop
 DESTINATION share/applications)
@@ -255,13 +265,13 @@ DESTINATION share/icons/hicolor/172x172/apps)
 
 message(STATUS "")
 message(STATUS "----------------------------------------------------------------------------------")
-message(STATUS "OSMScout-Sailfish ${OSMSCOUT_SAILFISH_VERSION_STRING} build configuration results")
+message(STATUS "SFOS TimeLapse tools ${TIMELAPSE_TOOLS_VERSION_STRING} build configuration results")
 
 message(STATUS "")
 message(STATUS "Build options:")
 
 message(STATUS " Build type .............................. ${CMAKE_BUILD_TYPE}")
-message(STATUS " Interprocedural optimizations ........... ${OSMSCOUT_ENABLE_IPO}")
+message(STATUS " Interprocedural optimizations ........... ${TIMELAPSE_ENABLE_IPO}")
 message(STATUS " Compiler flags .......................... ${CMAKE_CXX_FLAGS}")
 message(STATUS " Linker flags ............................ ${CMAKE_EXE_LINKER_FLAGS}")
 message(STATUS " Sanitizer ............................... ${SANITIZER}")
@@ -277,9 +287,9 @@ message(STATUS "")
 
 if(Qt5_FOUND AND
    LIBSAILFISHAPP_FOUND)
-    message(STATUS      " OSMScout-Sailfish can be compiled ....... YES")
+    message(STATUS      " TimeLapse tools can be compiled ......... YES")
 else()
-    message(FATAL_ERROR " OSMScout-Sailfish will be compiled ...... NO  (Look README file for more details about dependencies)")
+    message(FATAL_ERROR " TimeLapse tools will be compiled ........ NO  (Look README file for more details about dependencies)")
 endif()
 
 message(STATUS "----------------------------------------------------------------------------------")
