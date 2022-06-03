@@ -110,8 +110,12 @@ ExternalProject_Add(ImageMagick
     URL "${CMAKE_CURRENT_SOURCE_DIR}/ImageMagick-6.9.12-50.tar.gz"
     URL_HASH SHA256=178dcf059963840e35ae034ecb9dc82c8549692c33d98ff0b6a7f3aadc9a1605
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
-    CONFIGURE_COMMAND cmake -E env PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig
-        <SOURCE_DIR>/configure --prefix <INSTALL_DIR> --with-modules --without-freetype --disable-openmp
+    CONFIGURE_COMMAND cmake -E env
+        "PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig"
+        "CFLAGS=-I<INSTALL_DIR>/include"
+        "CPPFLAGS=-I<INSTALL_DIR>/include"
+        "LDFLAGS=-L<INSTALL_DIR>/lib -Wl,-rpath=/usr/share/harbour-timelapse-tools/lib"
+        <SOURCE_DIR>/configure --prefix <INSTALL_DIR> --with-sysroot=<INSTALL_DIR> --with-modules --without-freetype --disable-openmp
     BUILD_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT} install
     TEST_COMMAND ""
@@ -136,7 +140,11 @@ ExternalProject_Add(ffmpeg
     URL "${CMAKE_CURRENT_SOURCE_DIR}/ffmpeg-5.0.1.tar.gz"
     URL_HASH SHA256=840c012766ceb1a95ec92fcbe51d80024a74b1b3134c92c2ff64a6f8165e9059
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
-    CONFIGURE_COMMAND cmake -E env PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig
+    CONFIGURE_COMMAND cmake -E env
+        "PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig"
+        "CFLAGS=-I<INSTALL_DIR>/include"
+        "CPPFLAGS=-I<INSTALL_DIR>/include"
+        "LDFLAGS=-L<INSTALL_DIR>/lib -Wl,-rpath=/usr/share/harbour-timelapse-tools/lib"
         <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-x86asm --enable-gpl
     BUILD_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT} install
@@ -176,7 +184,11 @@ ExternalProject_Add(v4lUtils
     URL "${CMAKE_CURRENT_SOURCE_DIR}/v4l-utils-1.22.1.tar.bz2"
     URL_HASH SHA256=65c6fbe830a44ca105c443b027182c1b2c9053a91d1e72ad849dfab388b94e31
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
-    CONFIGURE_COMMAND cmake -E env PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig
+    CONFIGURE_COMMAND cmake -E env
+        "PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig"
+        "CFLAGS=-I<INSTALL_DIR>/include"
+        "CPPFLAGS=-I<INSTALL_DIR>/include"
+        "LDFLAGS=-L<INSTALL_DIR>/lib -Wl,-rpath=/usr/share/harbour-timelapse-tools/lib"
         <SOURCE_DIR>/configure
         --prefix <INSTALL_DIR>
         --disable-v4l2-compliance-libv4l
@@ -209,7 +221,8 @@ ExternalProject_Add(GPhoto2
     URL "${CMAKE_CURRENT_SOURCE_DIR}/libgphoto2-2.5.29.tar.gz"
     URL_HASH SHA256=467eaf95e5385e48786ee115802e24ece00f34ae88ac02f5dfa7c836846c6294
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
-    CONFIGURE_COMMAND cmake -E env PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig
+    CONFIGURE_COMMAND cmake -E env
+        "PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig"
         DEFAULT_CAMLIBS=/usr/share/harbour-timelapse-tools/lib/libgphoto2/2.5.29
         DEFAULT_IOLIBS=/usr/share/harbour-timelapse-tools/lib/libgphoto2_port/0.12.0
         <SOURCE_DIR>/configure --prefix <INSTALL_DIR>
