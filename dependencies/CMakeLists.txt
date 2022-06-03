@@ -271,9 +271,10 @@ set(DEP_LIBS
     ${libusb_LIBRARY}
     PARENT_SCOPE)
 
-add_custom_target(tarFfmpeg
+add_custom_target(tarFfmpeg ALL
     COMMAND tar -cf ffmpeg.tar ffmpeg
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installroot/bin
+    BYPRODUCTS "${ffmpeg_BIN}.tar"
     DEPENDS ffmpeg)
 
 set(ffmpeg_TAR
