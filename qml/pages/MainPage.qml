@@ -26,6 +26,46 @@ import Nemo.DBus 2.0
 
 import QtGraphicalEffects 1.0
 
+import harbour.timelapsetools 1.0
+
 Page {
     id: mainPage
+
+    ComboBox {
+        id: cameraComboBox
+        width: parent.width
+
+        property bool initialized: false
+        property string frontFaceLabel: qsTr("FrontFace")
+        property string backFaceLabel: qsTr("BackFace")
+
+        CameraModel {
+            id: cameraModel
+        }
+
+        label: qsTr("Camera")
+        menu: ContextMenu {
+            Repeater {
+                width: parent.width
+                model: cameraModel
+                delegate: MenuItem {
+                    text: model.backend + ": " + model.name +
+                          (model.position != "Unspecified" ? " (" + qsTr(model.position) +")"  : "")
+                }
+            }
+        }
+
+        onCurrentItemChanged: {
+
+        }
+        Component.onCompleted: {
+            initialized = true;
+            console.log("camera model: " + cameraModel.rowCount());
+        }
+        onPressAndHold: {
+            // improve default ComboBox UX :-)
+            clicked(mouse);
+        }
+    }
+
 }

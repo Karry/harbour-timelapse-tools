@@ -22,3 +22,18 @@
 #include <TimeLapse/pipeline_cpt.h>
 
 #include <QObject>
+
+/**
+ * QML Abstraction for TimeLapse camera device
+ */
+class QmlCameraDevice: public QObject {
+  Q_OBJECT
+
+public slots :
+
+public:
+  QmlCameraDevice(const QSharedPointer<timelapse::CaptureDevice>& dev);
+  ~QmlCameraDevice() = default;
+private:
+  QSharedPointer<timelapse::CaptureDevice> dev;
+};

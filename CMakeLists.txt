@@ -132,7 +132,10 @@ set(HEADER_FILES
     src/osmscout/util/CmdLineParsing.h
     src/osmscout/util/String.h
     src/Arguments.h
+    src/CameraModel.h
     src/IconProvider.h
+    src/QmlCameraDevice.h
+    src/TimeLapseCapture.h
     src/TimeLapseTools.h
     )
 
@@ -146,6 +149,9 @@ set(QML_FILES
 set(SOURCE_FILES
     src/osmscout/util/CmdLineParsing.cpp
     src/osmscout/util/String.cpp
+    src/CameraModel.cpp
+    src/QmlCameraDevice.cpp
+    src/TimeLapseCapture.cpp
     src/TimeLapseTools.cpp)
 
 # XML files with translated phrases.

@@ -22,3 +22,11 @@
 #include <TimeLapse/pipeline_cpt.h>
 
 #include <QObject>
+
+class TimeLapseCapture: public QObject {
+Q_OBJECT
+
+public slots :
+
+public:
+};

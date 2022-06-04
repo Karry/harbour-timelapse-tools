@@ -18,18 +18,12 @@
 */
 
 #include <harbour-timelapse-tools/private/Version.h>
-#include "IconProvider.h"
-#include "TimeLapseTools.h"
+#include <IconProvider.h>
+#include <TimeLapseTools.h>
+#include <CameraModel.h>
+#include <TimeLapseCapture.h>
 
 #include <Arguments.h>
-
-#include <TimeLapse/timelapse.h>
-#include <TimeLapse/black_hole_device.h>
-#include <TimeLapse/pipeline_cpt.h>
-#include <TimeLapse/pipeline_cpt_v4l.h>
-#include <TimeLapse/pipeline_cpt_gphoto2.h>
-#include <TimeLapse/pipeline_write_frame.h>
-#include <TimeLapse/pipeline_cpt_qcamera.h>
 
 // SFOS
 #include <sailfishapp/sailfishapp.h>
@@ -73,54 +67,6 @@ std::string versionStrings(){
 
   return ss.str();
 }
-
-void CameraTest::run() {
-  QList<QSharedPointer<timelapse::CaptureDevice>> devices = listDevices();
-  QTextStream verboseOutput(stdout);
-  if (devices.isEmpty()) {
-    verboseOutput << QCoreApplication::translate("main", "No compatible capture device found");
-  } else {
-    verboseOutput << "Found devices: " << endl;
-    for (QSharedPointer<timelapse::CaptureDevice> d : devices) {
-      verboseOutput << "  " << d->toString() << endl;
-    }
-  }
-}
-
-QList<QSharedPointer<timelapse::CaptureDevice>> CameraTest::listDevices() {
-  QList<QSharedPointer<timelapse::CaptureDevice>> result;
-
-  QTextStream verboseOutput(stdout);
-  QTextStream err(stderr);
-
-  QList<timelapse::V4LDevice> v4lDevices = timelapse::V4LDevice::listDevices(&verboseOutput);
-  for (const timelapse::V4LDevice &v4lDev: v4lDevices) {
-    result.push_back(QSharedPointer<timelapse::CaptureDevice>(new timelapse::V4LDevice(v4lDev)));
-  }
-
-  try {
-    QList<timelapse::Gphoto2Device> gp2devices = timelapse::Gphoto2Device::listDevices(&verboseOutput, &err);
-    for (const timelapse::Gphoto2Device &gp2Dev: gp2devices) {
-      result.push_back(QSharedPointer<timelapse::Gphoto2Device>(new timelapse::Gphoto2Device(gp2Dev)));
-    }
-  } catch (std::exception &e) {
-    err << "Can't get Gphoto2 devices. " << QString::fromUtf8(e.what()) << endl;
-  }
-
-  {
-    // Sailfish OS did not provide list of cameras until we load at least default one...
-    QCamera camera;
-    camera.load();
-  }
-
-  QList<timelapse::QCameraDevice> qCamDevices = timelapse::QCameraDevice::listDevices(&verboseOutput);
-  for (const timelapse::QCameraDevice &qCamDev: qCamDevices) {
-    result.push_back(QSharedPointer<timelapse::QCameraDevice>(new timelapse::QCameraDevice(qCamDev)));
-  }
-
-  return result;
-}
-
 
 Q_DECL_EXPORT int main(int argc, char* argv[]) {
 #ifdef Q_WS_X11
@@ -172,6 +118,9 @@ Q_DECL_EXPORT int main(int argc, char* argv[]) {
 
   timelapse::registerQtMetaTypes();
 
+  qmlRegisterType<CameraModel>("harbour.timelapsetools", 1, 0, "CameraModel");
+  qmlRegisterType<TimeLapseCapture>("harbour.timelapsetools", 1, 0, "TimeLapseCapture");
+
   // setup ImageMagick, see https://imagemagick.org/script/resources.php
   // TODO: it is working?
   qputenv("MAGICK_CONFIGURE_PATH", "/usr/share/harbour-timelapse-tools/etc/ImageMagick-6");
@@ -183,9 +132,6 @@ Q_DECL_EXPORT int main(int argc, char* argv[]) {
   view->engine()->addImageProvider(QLatin1String("harbour-osmscout"), new IconProvider());
   view->setSource(SailfishApp::pathTo("qml/main.qml"));
   view->showFullScreen();
-
-  CameraTest test;
-  QTimer::singleShot(0, &test, SLOT(run()));
 
   int result=app->exec();
 
