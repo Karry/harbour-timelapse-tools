@@ -19,3 +19,12 @@
 
 #include <TimeLapseCapture.h>
 
+static QStringList recordDirectories;
+
+QStringList TimeLapseCapture::getRecordDirectories() const {
+  return recordDirectories;
+}
+
+void TimeLapseCapture::setRecordDirectories(const QStringList &l) {
+  recordDirectories=l;
+}

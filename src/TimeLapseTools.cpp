@@ -44,6 +44,7 @@
 #endif
 
 #include <sstream>
+#include <QStorageInfo>
 
 #ifndef TIMELAPSE_TOOLS_VERSION_STRING
 static_assert(false, "TIMELAPSE_TOOLS_VERSION_STRING should be defined by build system");
@@ -120,6 +121,26 @@ Q_DECL_EXPORT int main(int argc, char* argv[]) {
 
   qmlRegisterType<CameraModel>("harbour.timelapsetools", 1, 0, "CameraModel");
   qmlRegisterType<TimeLapseCapture>("harbour.timelapsetools", 1, 0, "TimeLapseCapture");
+
+  {
+    QString pictureDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    QStringList storeDirectories;
+    storeDirectories << pictureDir + QDir::separator() + ".timelapse";
+    for (const QStorageInfo &storage : QStorageInfo::mountedVolumes()) {
+
+      QString mountPoint = storage.rootPath();
+
+      // Sailfish OS specific mount point base for SD cards!
+      if (storage.isValid() &&
+          storage.isReady() &&
+          mountPoint.startsWith("/run/media/")) {
+
+        qDebug() << "Found storage:" << mountPoint;
+        storeDirectories << mountPoint + QDir::separator() + "Pictures" + QDir::separator() + ".timelapse";
+      }
+    }
+    TimeLapseCapture::setRecordDirectories(storeDirectories);
+  }
 
   // setup ImageMagick, see https://imagemagick.org/script/resources.php
   // TODO: it is working?

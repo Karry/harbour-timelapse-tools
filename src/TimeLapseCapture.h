@@ -22,11 +22,26 @@
 #include <TimeLapse/pipeline_cpt.h>
 
 #include <QObject>
+#include <QStringList>
 
 class TimeLapseCapture: public QObject {
-Q_OBJECT
+  Q_OBJECT
+
+  Q_PROPERTY(QStringList recordDirectories READ getRecordDirectories)
 
 public slots :
 
 public:
+  TimeLapseCapture() = default;
+  TimeLapseCapture(const TimeLapseCapture&) = delete;
+  TimeLapseCapture(TimeLapseCapture&&) = delete;
+  ~TimeLapseCapture() override = default;
+  TimeLapseCapture& operator=(const TimeLapseCapture&) = delete;
+  TimeLapseCapture& operator=(TimeLapseCapture&&) = delete;
+
+  QStringList getRecordDirectories() const;
+
+  static void setRecordDirectories(const QStringList &l);
+
+private:
 };

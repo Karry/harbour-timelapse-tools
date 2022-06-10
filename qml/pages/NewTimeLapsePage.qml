@@ -29,6 +29,9 @@ import QtMultimedia 5.6
 
 import harbour.timelapsetools 1.0
 
+import "../custom"
+import "../custom/Utils.js" as Utils
+
 Page {
     id: newTimeLapsePage
 
@@ -123,6 +126,9 @@ Page {
 
     CameraModel {
         id: cameraModel
+    }
+    TimeLapseCapture {
+        id: timelapseCapture
     }
 
     Column {
@@ -245,15 +251,15 @@ Page {
                     console.log("NOT initialized");
                     return;
                 }
-                // var dirs=mapDownloadsModel.getLookupDirectories();
-                var dirs=[]; //mapDownloadsModel.getLookupDirectories();
+                var dirs=timelapseCapture.recordDirectories;
+                //var dirs=[]; //mapDownloadsModel.getLookupDirectories();
                 selected = dirs[currentIndex];
                 //selected = directories[currentIndex].dir
                 console.log("changed, currentIndex=" + destinationDirectoryComboBox.currentIndex + " selected: " + selected);
             }
             Component.onCompleted: {
-                //var dirs=mapDownloadsModel.getLookupDirectories();
-                var dirs=[]; //mapDownloadsModel.getLookupDirectories();
+                var dirs=timelapseCapture.recordDirectories;
+                //var dirs=[]; //mapDownloadsModel.getLookupDirectories();
                 for (var i in dirs){
                     var dir = dirs[i];
                     if (selected==""){
@@ -265,6 +271,22 @@ Page {
                 initialized = true;
                 console.log("initialized, currentIndex=" + destinationDirectoryComboBox.currentIndex);
             }
+        }
+        TextField {
+            id: imageCntField
+            label: qsTr("Image count (0 is unlimited)")
+            text: "0"
+            validator: RegExpValidator { regExp: /^[0-9]{3,}$/ }
+            inputMethodHints: Qt.ImhDigitsOnly
+        }
+        Label {
+            property string captureDuration: "?"
+            property string videoDuration: "?"
+            text: qsTr("Capture duration: %1, video duration: %2 (30 fps)")
+                .arg().arg()
+            visible: imageCntField!="0"
+            x: Theme.horizontalPageMargin
+            font.pixelSize: Theme.fontSizeSmall
         }
     }
 

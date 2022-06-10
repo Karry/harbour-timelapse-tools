@@ -142,6 +142,7 @@ set(HEADER_FILES
 # keep qml files in source list - it makes qtcreator happy
 # find qml -type f
 set(QML_FILES
+    qml/custom/Utils.js
     qml/pages/Cover.qml
     qml/pages/MainPage.qml
     qml/pages/NewTimeLapsePage.qml
