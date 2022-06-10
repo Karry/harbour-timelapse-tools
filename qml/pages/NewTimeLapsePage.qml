@@ -131,162 +131,190 @@ Page {
         id: timelapseCapture
     }
 
-    Column {
+
+
+    SilicaFlickable {
+        id: flickable
         anchors {
             top: sectionRow.bottom
             left: parent.left
             bottom: parent.bottom
         }
-        //width: Math.min(parent.width / 2, Math.max(1200, parent.width))
         width: newTimeLapsePage.settingWidth
+        //contentHeight: content.height + header.height + 2*Theme.paddingLarge
 
-        visible: newTimeLapsePage.state == "Generic"
+        VerticalScrollDecorator {}
 
-        ComboBox {
-            id: cameraComboBox
+        Column {
+            //width: Math.min(parent.width / 2, Math.max(1200, parent.width))
             width: parent.width
 
-            property bool initialized: false
-            property string frontFaceLabel: qsTr("FrontFace")
-            property string backFaceLabel: qsTr("BackFace")
+            visible: newTimeLapsePage.state == "Generic"
 
-            label: qsTr("Camera")
-            menu: ContextMenu {
-                Repeater {
-                    width: parent.width
-                    model: cameraModel
-                    delegate: MenuItem {
-                        text: model.backend + ": " + model.name +
-                              (model.position != "Unspecified" ? " (" + qsTr(model.position) +")"  : "")
+            ComboBox {
+                id: cameraComboBox
+                width: parent.width
+
+                property bool initialized: false
+                property string frontFaceLabel: qsTr("FrontFace")
+                property string backFaceLabel: qsTr("BackFace")
+
+                label: qsTr("Camera")
+                menu: ContextMenu {
+                    Repeater {
+                        width: parent.width
+                        model: cameraModel
+                        delegate: MenuItem {
+                            text: model.backend + ": " + model.name +
+                                  (model.position != "Unspecified" ? " (" + qsTr(model.position) +")"  : "")
+                        }
                     }
                 }
-            }
 
-            Timer {
-                id: startCameraDelay
-                interval: 10
-                repeat: false
-                onTriggered: {
+                Timer {
+                    id: startCameraDelay
+                    interval: 10
+                    repeat: false
+                    onTriggered: {
+                        if (newTimeLapsePage.camera!=null) {
+                            newTimeLapsePage.camera.start();
+                        }
+                    }
+                }
+
+                function setupCamera() {
                     if (newTimeLapsePage.camera!=null) {
-                        newTimeLapsePage.camera.start();
+                        newTimeLapsePage.camera.stop();
                     }
-                }
-            }
-
-            function setupCamera() {
-                if (newTimeLapsePage.camera!=null) {
-                    newTimeLapsePage.camera.stop();
-                }
-                var idx = cameraModel.index(cameraComboBox.currentIndex, 0);
-                newTimeLapsePage.camera = cameraModel.data(idx, CameraModel.CameraObjectRole);
-                if (newTimeLapsePage.camera.mediaObject != null) {
-                    viewFinder.visible = true;
-                    if (cameraModel.data(idx, CameraModel.PositionRole) == "FrontFace") {
-                        viewFinder.orientation = 270;
+                    var idx = cameraModel.index(cameraComboBox.currentIndex, 0);
+                    newTimeLapsePage.camera = cameraModel.data(idx, CameraModel.CameraObjectRole);
+                    if (newTimeLapsePage.camera.mediaObject != null) {
+                        viewFinder.visible = true;
+                        if (cameraModel.data(idx, CameraModel.PositionRole) == "FrontFace") {
+                            viewFinder.orientation = 270;
+                        } else {
+                            viewFinder.orientation = 90;
+                        }
+                        viewFinder.source = newTimeLapsePage.camera
+                        startCameraDelay.start();
                     } else {
-                        viewFinder.orientation = 90;
-                    }
-                    viewFinder.source = newTimeLapsePage.camera
-                    startCameraDelay.start();
-                } else {
-                    viewFinder.source = emptyPlayer;
-                    //viewFinder.visible = false;
-                }
-            }
-
-            onCurrentItemChanged: {
-                if (!initialized){
-                    return;
-                }
-                setupCamera()
-            }
-            Component.onCompleted: {
-                initialized = true;
-                console.log("camera model: " + cameraModel.rowCount());
-                setupCamera();
-            }
-            onPressAndHold: {
-                // improve default ComboBox UX :-)
-                clicked(mouse);
-            }
-        }
-        Label {
-            text: qsTr("Device: %1").arg(newTimeLapsePage.camera.device)
-            visible: newTimeLapsePage.camera.device != ""
-            x: Theme.horizontalPageMargin
-        }
-        Label {
-            text: qsTr("Resolution: %1x%2")
-                .arg(newTimeLapsePage.camera.resolution.width)
-                .arg(newTimeLapsePage.camera.resolution.height)
-            visible: newTimeLapsePage.camera.resolution.width > 0 && newTimeLapsePage.camera.resolution.height > 0
-            x: Theme.horizontalPageMargin
-        }
-        TextField {
-            label: qsTr("Capture interval [ms]")
-            text: "1000"
-            validator: RegExpValidator { regExp: /^[0-9]{3,}$/ }
-            inputMethodHints: Qt.ImhDigitsOnly
-        }
-        ComboBox {
-            id: destinationDirectoryComboBox
-
-            property bool initialized: false
-            property string selected: updateDirectory
-            property ListModel directories: ListModel {}
-
-            label: qsTr("Directory")
-            menu: ContextMenu {
-                id: contextMenu
-                Repeater {
-                    model: destinationDirectoryComboBox.directories
-                    MenuItem {
-                        text: Utils.humanDirectory(dir)
+                        viewFinder.source = emptyPlayer;
+                        //viewFinder.visible = false;
                     }
                 }
-            }
 
-            onCurrentItemChanged: {
-                if (!initialized){
-                    console.log("NOT initialized");
-                    return;
-                }
-                var dirs=timelapseCapture.recordDirectories;
-                //var dirs=[]; //mapDownloadsModel.getLookupDirectories();
-                selected = dirs[currentIndex];
-                //selected = directories[currentIndex].dir
-                console.log("changed, currentIndex=" + destinationDirectoryComboBox.currentIndex + " selected: " + selected);
-            }
-            Component.onCompleted: {
-                var dirs=timelapseCapture.recordDirectories;
-                //var dirs=[]; //mapDownloadsModel.getLookupDirectories();
-                for (var i in dirs){
-                    var dir = dirs[i];
-                    if (selected==""){
-                        selected=dir;
+                onCurrentItemChanged: {
+                    if (!initialized){
+                        return;
                     }
-                    console.log("Dir: "+dir);
-                    directories.append({"dir": dir});
+                    setupCamera()
                 }
-                initialized = true;
-                console.log("initialized, currentIndex=" + destinationDirectoryComboBox.currentIndex);
+                Component.onCompleted: {
+                    initialized = true;
+                    console.log("camera model: " + cameraModel.rowCount());
+                    setupCamera();
+                }
+                onPressAndHold: {
+                    // improve default ComboBox UX :-)
+                    clicked(mouse);
+                }
             }
-        }
-        TextField {
-            id: imageCntField
-            label: qsTr("Image count (0 is unlimited)")
-            text: "0"
-            validator: RegExpValidator { regExp: /^[0-9]{3,}$/ }
-            inputMethodHints: Qt.ImhDigitsOnly
-        }
-        Label {
-            property string captureDuration: "?"
-            property string videoDuration: "?"
-            text: qsTr("Capture duration: %1, video duration: %2 (30 fps)")
-                .arg().arg()
-            visible: imageCntField!="0"
-            x: Theme.horizontalPageMargin
-            font.pixelSize: Theme.fontSizeSmall
+            Label {
+                text: qsTr("Device: %1").arg(newTimeLapsePage.camera.device)
+                visible: newTimeLapsePage.camera.device != ""
+                x: Theme.horizontalPageMargin
+            }
+            Label {
+                text: qsTr("Resolution: %1x%2")
+                    .arg(newTimeLapsePage.camera.resolution.width)
+                    .arg(newTimeLapsePage.camera.resolution.height)
+                visible: newTimeLapsePage.camera.resolution.width > 0 && newTimeLapsePage.camera.resolution.height > 0
+                x: Theme.horizontalPageMargin
+            }
+            TextField {
+                id: intervalField
+                label: qsTr("Capture interval [ms]")
+                text: "1000"
+                validator: RegExpValidator { regExp: /^[0-9]{3,}$/ }
+                inputMethodHints: Qt.ImhDigitsOnly
+                onTextChanged: {
+                    durationLabel.update()
+                }
+            }
+            ComboBox {
+                id: destinationDirectoryComboBox
+
+                property bool initialized: false
+                property string selected: updateDirectory
+                property ListModel directories: ListModel {}
+
+                label: qsTr("Directory")
+                menu: ContextMenu {
+                    id: contextMenu
+                    Repeater {
+                        model: destinationDirectoryComboBox.directories
+                        MenuItem {
+                            text: Utils.humanDirectory(dir)
+                        }
+                    }
+                }
+
+                onCurrentItemChanged: {
+                    if (!initialized){
+                        console.log("NOT initialized");
+                        return;
+                    }
+                    var dirs=timelapseCapture.recordDirectories;
+                    //var dirs=[]; //mapDownloadsModel.getLookupDirectories();
+                    selected = dirs[currentIndex];
+                    //selected = directories[currentIndex].dir
+                    console.log("changed, currentIndex=" + destinationDirectoryComboBox.currentIndex + " selected: " + selected);
+                }
+                Component.onCompleted: {
+                    var dirs=timelapseCapture.recordDirectories;
+                    //var dirs=[]; //mapDownloadsModel.getLookupDirectories();
+                    for (var i in dirs){
+                        var dir = dirs[i];
+                        if (selected==""){
+                            selected=dir;
+                        }
+                        console.log("Dir: "+dir);
+                        directories.append({"dir": dir});
+                    }
+                    initialized = true;
+                    console.log("initialized, currentIndex=" + destinationDirectoryComboBox.currentIndex);
+                }
+            }
+            TextField {
+                id: imageCntField
+                label: qsTr("Image count (0 is unlimited)")
+                text: "0"
+                validator: RegExpValidator { regExp: /^[0-9]{1,}$/ }
+                inputMethodHints: Qt.ImhDigitsOnly
+                onTextChanged: {
+                    durationLabel.update()
+                }
+            }
+            Label {
+                id: durationLabel
+                function update() {
+                    captureDuration = Utils.humanDurationLong((parseInt(intervalField.text, 10)/1000)
+                                                              * parseInt(imageCntField.text, 10))
+                    videoDuration = Utils.humanDurationLong(parseInt(imageCntField.text, 10) / 30)
+                }
+
+                property string captureDuration: "?"
+                property string videoDuration: "?"
+                text: qsTr("Capture duration: %1, \n" +
+                           "video duration: %2 @ 30 fps")
+                    .arg(captureDuration).arg(videoDuration)
+                width: parent.width - (Theme.horizontalPageMargin * Theme.paddingSmall)
+                wrapMode: Text.WordWrap
+                visible: imageCntField.text!="0"
+                x: Theme.horizontalPageMargin
+                font.pixelSize: Theme.fontSizeTiny
+                color: Theme.secondaryColor
+            }
         }
     }
 
