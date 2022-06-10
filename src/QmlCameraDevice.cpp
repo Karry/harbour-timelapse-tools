@@ -18,8 +18,33 @@
 */
 
 #include <QmlCameraDevice.h>
+#include <QDebug>
+
+#include <TimeLapse/pipeline_cpt_qcamera.h>
 
 QmlCameraDevice::QmlCameraDevice(const QSharedPointer<timelapse::CaptureDevice>& dev):
   dev(dev) {
+
+  connect(dev.data(), &timelapse::CaptureDevice::update, this, &QmlCameraDevice::update);
+  connect(dev.data(), &timelapse::CaptureDevice::update, this, &QmlCameraDevice::onUpdate);
 }
 
+void QmlCameraDevice::onUpdate() {
+  qDebug() << "updated resolution: " << dev->resolution();
+}
+
+void QmlCameraDevice::start() {
+  dev->start();
+}
+
+void QmlCameraDevice::stop() {
+  dev->stop();
+}
+
+QString QmlCameraDevice::positionString(QCamera::Position position) {
+  switch (position) {
+    case QCamera::BackFace: return "BackFace";
+    case QCamera::FrontFace: return "FrontFace";
+    default: return "Unspecified";
+  }
+}

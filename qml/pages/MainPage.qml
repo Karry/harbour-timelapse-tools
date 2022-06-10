@@ -31,40 +31,20 @@ import harbour.timelapsetools 1.0
 Page {
     id: mainPage
 
-    ComboBox {
-        id: cameraComboBox
+    Column{
+        anchors.margins: Theme.horizontalPageMargin
+        y: Theme.paddingLarge
         width: parent.width
+        spacing: Theme.paddingLarge
 
-        property bool initialized: false
-        property string frontFaceLabel: qsTr("FrontFace")
-        property string backFaceLabel: qsTr("BackFace")
-
-        CameraModel {
-            id: cameraModel
-        }
-
-        label: qsTr("Camera")
-        menu: ContextMenu {
-            Repeater {
-                width: parent.width
-                model: cameraModel
-                delegate: MenuItem {
-                    text: model.backend + ": " + model.name +
-                          (model.position != "Unspecified" ? " (" + qsTr(model.position) +")"  : "")
-                }
+        Button {
+            anchors {
+                horizontalCenter: parent.horizontalCenter
             }
-        }
-
-        onCurrentItemChanged: {
-
-        }
-        Component.onCompleted: {
-            initialized = true;
-            console.log("camera model: " + cameraModel.rowCount());
-        }
-        onPressAndHold: {
-            // improve default ComboBox UX :-)
-            clicked(mouse);
+            text: qsTr("New TimeLapse")
+            onClicked: {
+                pageStack.push(Qt.resolvedUrl("NewTimeLapsePage.qml"),{})
+            }
         }
     }
 

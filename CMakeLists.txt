@@ -144,6 +144,7 @@ set(HEADER_FILES
 set(QML_FILES
     qml/pages/Cover.qml
     qml/pages/MainPage.qml
+    qml/pages/NewTimeLapsePage.qml
     qml/main.qml)
 
 set(SOURCE_FILES

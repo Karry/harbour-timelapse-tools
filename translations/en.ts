@@ -4,15 +4,42 @@
 <context>
     <name>MainPage</name>
     <message>
-        <source>Camera</source>
+        <source>New TimeLapse</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>NewTimeLapsePage</name>
     <message>
         <source>FrontFace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>BackFace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Camera</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resolution: %1x%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exposure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Focus</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

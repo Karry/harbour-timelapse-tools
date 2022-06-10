@@ -29,6 +29,7 @@ class CameraModel: public QAbstractListModel {
   Q_OBJECT
 
 public slots :
+  void onCameraUpdate();
 
 public:
   explicit CameraModel(QObject *parent=nullptr);
@@ -43,7 +44,8 @@ public:
     BackendRole = Qt::UserRole + 1,
     DeviceRole = Qt::UserRole + 2,
     PositionRole = Qt::UserRole + 3,
-    CameraObjectRole = Qt::UserRole + 4
+    ResolutionRole = Qt::UserRole + 4,
+    CameraObjectRole = Qt::UserRole + 5
   };
   Q_ENUM(Roles)
 
@@ -53,7 +55,6 @@ public:
   Q_INVOKABLE Qt::ItemFlags flags(const QModelIndex &index) const override;
 
 private:
-  QString positionString(QCamera::Position position) const;
   QList <QSharedPointer<timelapse::CaptureDevice>> listDevices();
 
 private:

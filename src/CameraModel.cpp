@@ -38,8 +38,21 @@ CameraModel::CameraModel(QObject *parent):
   } else {
     verboseOutput << "Found devices: " << endl;
     for (QSharedPointer<timelapse::CaptureDevice> d : devices) {
+      connect(d.data(), &timelapse::CaptureDevice::update, this, &CameraModel::onCameraUpdate);
       verboseOutput << "  " << d->toString() << endl;
     }
+  }
+}
+
+void CameraModel::onCameraUpdate() {
+  QObject *cam=sender();
+  int i=0;
+  for (QSharedPointer<timelapse::CaptureDevice> d : devices) {
+    if (d.data() == cam) {
+      emit dataChanged(index(i), index(0));
+      return;
+    }
+    i++;
   }
 }
 
@@ -57,7 +70,8 @@ QVariant CameraModel::data(const QModelIndex &index, int role) const {
     case NameRole: return dev->name();
     case BackendRole: return dev->backend();
     case DeviceRole: return dev->device();
-    case PositionRole: return positionString(dev->position());
+    case PositionRole: return QmlCameraDevice::positionString(dev->position());
+    case ResolutionRole: return dev->resolution();
     case CameraObjectRole: return QVariant::fromValue(new QmlCameraDevice(dev));
   }
   return QVariant();
@@ -70,6 +84,7 @@ QHash<int, QByteArray> CameraModel::roleNames() const {
   roles[BackendRole]="backend";
   roles[DeviceRole]="device";
   roles[PositionRole]="position";
+  roles[ResolutionRole]="resolution";
   roles[CameraObjectRole]="cameraObject";
 
   return roles;
@@ -81,14 +96,6 @@ Qt::ItemFlags CameraModel::flags(const QModelIndex &index) const {
   }
 
   return QAbstractItemModel::flags(index) | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-}
-
-QString CameraModel::positionString(QCamera::Position position) const {
-  switch (position) {
-    case QCamera::BackFace: return "BackFace";
-    case QCamera::FrontFace: return "FrontFace";
-    default: return "Unspecified";
-  }
 }
 
 QList<QSharedPointer<timelapse::CaptureDevice>> CameraModel::listDevices() {
