@@ -91,22 +91,18 @@ QString QmlCameraDevice::getFocusMode() {
 
 void QmlCameraDevice::setShutterSpeed(const QString &shutterSpeed) {
   dev->setShutterSpeed(timelapse::ShutterSpeedChoice(shutterSpeed));
-  emit update();
 }
 
 void QmlCameraDevice::setAperture(const QString &aperture) {
   dev->setAperture(aperture);
-  emit update();
 }
 
 void QmlCameraDevice::setIso(const QString &iso) {
   dev->setIso(iso);
-  emit update();
 }
 
 void QmlCameraDevice::setFocusMode(const QString &focusMode) {
   dev->setFocusMode(focusMode);
-  emit update();
 }
 
 QString QmlCameraDevice::getFocusPointMode() {
@@ -115,7 +111,6 @@ QString QmlCameraDevice::getFocusPointMode() {
 
 void QmlCameraDevice::setFocusPointMode(const QString &mode) {
   dev->setFocusPointMode(mode);
-  emit update();
 }
 
 QStringList QmlCameraDevice::getFocusPointModeOptions() {
@@ -129,7 +124,6 @@ QPointF QmlCameraDevice::getCustomFocusPoint() {
 void QmlCameraDevice::setCustomFocusPoint(const QPointF &p) {
   qDebug() << "CustomFocusPoint" << p;
   dev->setCustomFocusPoint(p);
-  emit update();
 }
 
 bool QmlCameraDevice::getFocusLockSupport() {
@@ -142,7 +136,6 @@ bool QmlCameraDevice::getPersistentFocusLock() {
 
 void QmlCameraDevice::setPersistentFocusLock(bool b) {
   dev->setPersistentFocusLock(b);
-  emit update();
 }
 
 QString QmlCameraDevice::positionString(QCamera::Position position) {
