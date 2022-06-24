@@ -54,7 +54,9 @@ QStringList QmlCameraDevice::getShutterSpeedOptions() {
     }
   }
   if (bulb) {
-    for (int64_t bulbTime=maxTime+1; bulbTime <= 30; bulbTime += (bulbTime < 10 ? 1 : 5)) {
+    for (int64_t bulbTime=maxTime + (maxTime < 10 ? 1 : 5);
+         bulbTime <= 300;
+         bulbTime += (bulbTime < 10 ? 1 : (bulbTime < 60 ? 5 : 10))) {
       result << QString("Bulb:%1").arg(bulbTime);
     }
   }
