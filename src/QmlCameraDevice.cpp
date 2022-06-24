@@ -41,6 +41,110 @@ void QmlCameraDevice::stop() {
   dev->stop();
 }
 
+QStringList QmlCameraDevice::getShutterSpeedOptions() {
+  QStringList result;
+  bool bulb=false;
+  int64_t maxTime=0;
+  for (auto &choice: dev->getShutterSpeedChoices()) {
+    if (choice.isBulb()) {
+      bulb=true;
+    } else {
+      result << choice.toString();
+      maxTime=std::max(maxTime, choice.toSecond());
+    }
+  }
+  if (bulb) {
+    for (int64_t bulbTime=maxTime+1; bulbTime <= 30; bulbTime += (bulbTime < 10 ? 1 : 5)) {
+      result << QString("Bulb:%1").arg(bulbTime);
+    }
+  }
+  return result;
+}
+
+QStringList QmlCameraDevice::getApertureOptions() {
+  return dev->getApertureChoices();
+}
+
+QStringList QmlCameraDevice::getIsoOptions() {
+  return dev->getIsoChoices();
+}
+
+QStringList QmlCameraDevice::getFocusModeOptions() {
+  return dev->getFocusModeChoices();
+}
+
+QString QmlCameraDevice::getShutterSpeed() {
+  return dev->currentShutterSpeed().toString();
+}
+
+QString QmlCameraDevice::getAperture() {
+  return dev->currentAperture();
+}
+
+QString QmlCameraDevice::getIso() {
+  return dev->currentIso();
+}
+
+QString QmlCameraDevice::getFocusMode() {
+  return dev->currentFocusMode();
+}
+
+void QmlCameraDevice::setShutterSpeed(const QString &shutterSpeed) {
+  dev->setShutterSpeed(timelapse::ShutterSpeedChoice(shutterSpeed));
+  emit update();
+}
+
+void QmlCameraDevice::setAperture(const QString &aperture) {
+  dev->setAperture(aperture);
+  emit update();
+}
+
+void QmlCameraDevice::setIso(const QString &iso) {
+  dev->setIso(iso);
+  emit update();
+}
+
+void QmlCameraDevice::setFocusMode(const QString &focusMode) {
+  dev->setFocusMode(focusMode);
+  emit update();
+}
+
+QString QmlCameraDevice::getFocusPointMode() {
+  return dev->currentFocusPointMode();
+}
+
+void QmlCameraDevice::setFocusPointMode(const QString &mode) {
+  dev->setFocusPointMode(mode);
+  emit update();
+}
+
+QStringList QmlCameraDevice::getFocusPointModeOptions() {
+  return dev->getFocusPointModeChoices();
+}
+
+QPointF QmlCameraDevice::getCustomFocusPoint() {
+  return dev->customFocusPoint();
+}
+
+void QmlCameraDevice::setCustomFocusPoint(const QPointF &p) {
+  qDebug() << "CustomFocusPoint" << p;
+  dev->setCustomFocusPoint(p);
+  emit update();
+}
+
+bool QmlCameraDevice::getFocusLockSupport() {
+  return dev->focusLockSupported();
+}
+
+bool QmlCameraDevice::getPersistentFocusLock() {
+  return dev->persistentFocusLock();
+}
+
+void QmlCameraDevice::setPersistentFocusLock(bool b) {
+  dev->setPersistentFocusLock(b);
+  emit update();
+}
+
 QString QmlCameraDevice::positionString(QCamera::Position position) {
   switch (position) {
     case QCamera::BackFace: return "BackFace";

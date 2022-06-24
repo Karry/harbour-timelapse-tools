@@ -76,6 +76,34 @@ Page {
             }
         }
         */
+        MouseArea {
+            id: focusMouseArea
+            anchors.fill: parent
+            onClicked: {
+                if (camera!=null && (camera.focusMode === "Auto" || camera.focusMode === "Continuous" || camera.focusMode === "Macro")) {
+                    // var viewFinderPoint = Qt.point(mouse.x, mouse.y);
+                    var viewFinderPoint = Qt.point(mouse.y, focusMouseArea.width - mouse.x);
+                    console.log("viewFinderPoint: " + viewFinderPoint + " (" + focusMouseArea.width + " x " + focusMouseArea.height + ")");
+                    camera.focusPointMode = "Custom";
+                    camera.customFocusPoint = viewFinder.mapPointToSourceNormalized(viewFinderPoint);
+                    focusCircle.x = mouse.x - focusCircle.width / 2;
+                    focusCircle.y = mouse.y - focusCircle.height / 2;
+                    console.log("focus circle: " + focusCircle.x + " x " + focusCircle.y + "");
+                }
+            }
+        }
+        Rectangle {
+            id: focusCircle
+            height: Theme.itemSizeMedium
+            width: height
+            radius: width / 2
+            x: parent.width / 2 - focusCircle.width / 2
+            y: parent.height / 2 - focusCircle.width / 2
+            border.width: 4
+            border.color: "white"
+            color: "transparent"
+            visible: camera.focusPointMode == "Custom" && (camera.focusMode === "Auto" || camera.focusMode === "Continuous" || camera.focusMode === "Macro")
+        }
     }
 
     states: [
@@ -315,6 +343,290 @@ Page {
                 font.pixelSize: Theme.fontSizeTiny
                 color: Theme.secondaryColor
             }
+        }
+
+        Column {
+            width: parent.width
+            visible: newTimeLapsePage.state == "Exposure"
+
+            ComboBox {
+                id: isoComboBox
+                width: parent.width
+                visible: camera!=null && camera.isoOptions.length > 0
+
+                property bool initialized: false
+
+                label: qsTr("ISO")
+                menu: ContextMenu {
+                    Repeater {
+                        width: parent.width
+                        model: camera != null ? camera.isoOptions : []
+                        delegate: MenuItem {
+                            text: modelData
+                        }
+                    }
+                }
+                function update() {
+                    isoComboBox.initialized=false;
+                    isoComboBox.currentIndex=0;
+                    if (camera!=null) {
+                        for (var row=0; row < camera.isoOptions.length; row++){
+                            if (camera.iso==camera.isoOptions[row]){
+                                isoComboBox.currentIndex=row;
+                            }
+                        }
+                    }
+                    isoComboBox.initialized=true;
+                }
+            }
+            ComboBox {
+                id: apertureComboBox
+                width: parent.width
+                visible: camera!=null && camera.apertureOptions.length > 0
+
+                property bool initialized: false
+
+                label: qsTr("Aperture")
+                menu: ContextMenu {
+                    Repeater {
+                        width: parent.width
+                        model: camera != null ? camera.apertureOptions : []
+                        delegate: MenuItem {
+                            text: modelData
+                        }
+                    }
+                }
+                function update() {
+                    apertureComboBox.initialized=false;
+                    apertureComboBox.currentIndex=0;
+                    if (camera!=null) {
+                        for (var row=0; row < camera.apertureOptions.length; row++){
+                            if (camera.aperture==camera.apertureOptions[row]){
+                                apertureComboBox.currentIndex=row;
+                            }
+                        }
+                    }
+                    apertureComboBox.initialized=false;
+                }
+            }
+            TextSwitch{
+                id: adaptiveShutterSpeedSwitch
+                width: parent.width
+                visible: camera!=null && camera.shutterSpeedOptions.length > 0
+
+                text: qsTr("Adaptive shutter-speed")
+            }
+            ComboBox {
+                id: shutterSpeedComboBox
+                width: parent.width
+                visible: camera!=null && camera.shutterSpeedOptions.length > 0
+
+                property bool initialized: false
+
+                label: adaptiveShutterSpeedSwitch.checked ? qsTr("Min. shutter speed") : qsTr("Shutter speed")
+                menu: ContextMenu {
+                    Repeater {
+                        width: parent.width
+                        model: camera != null ? camera.shutterSpeedOptions : []
+                        delegate: MenuItem {
+                            text: modelData
+                        }
+                    }
+                }
+                function update() {
+                    shutterSpeedComboBox.initialized=false;
+                    shutterSpeedComboBox.currentIndex=0;
+                    if (camera!=null) {
+                        for (var row=0; row < camera.shutterSpeedOptions.length; row++){
+                            if (camera.shutterSpeed==camera.shutterSpeedOptions[row]){
+                                shutterSpeedComboBox.currentIndex=row;
+                            }
+                        }
+                    }
+                    shutterSpeedComboBox.initialized=true;
+                }
+            }
+            ComboBox {
+                id: maxShutterSpeedComboBox
+                width: parent.width
+                visible: camera!=null && camera.shutterSpeedOptions.length > 0 && adaptiveShutterSpeedSwitch.checked
+
+                property bool initialized: false
+
+                label: qsTr("Max. shutter speed")
+                menu: ContextMenu {
+                    Repeater {
+                        width: parent.width
+                        model: camera != null ? camera.shutterSpeedOptions : []
+                        delegate: MenuItem {
+                            text: modelData
+                        }
+                    }
+                }
+                function update() {
+                    shutterSpeedComboBox.initialized=false;
+                    shutterSpeedComboBox.currentIndex=0;
+                    if (camera!=null) {
+                        for (var row=0; row < camera.shutterSpeedOptions.length; row++){
+                            if (camera.shutterSpeed==camera.shutterSpeedOptions[row]){
+                                shutterSpeedComboBox.currentIndex=row;
+                            }
+                        }
+                    }
+                    shutterSpeedComboBox.initialized=true;
+                }
+            }
+            Label {
+                text: qsTr("Camera didn't support ISO, aperture and shutter speed setting.")
+                width: parent.width - (Theme.horizontalPageMargin * Theme.paddingSmall)
+                wrapMode: Text.WordWrap
+                visible: !shutterSpeedComboBox.visible && !apertureComboBox.visible && !isoComboBox.visible
+                x: Theme.horizontalPageMargin
+                font.pixelSize: Theme.fontSizeTiny
+                color: Theme.secondaryColor
+            }
+        }
+
+        Column {
+            width: parent.width
+            visible: newTimeLapsePage.state == "Focus"
+
+            ComboBox {
+                id: focusModeComboBox
+                width: parent.width
+                visible: camera!=null && camera.focusModeOptions.length > 0
+
+                property bool initialized: false
+
+                label: qsTr("Focus mode")
+                menu: ContextMenu {
+                    Repeater {
+                        width: parent.width
+                        model: camera != null ? camera.focusModeOptions : []
+                        delegate: MenuItem {
+                            text: modelData
+                        }
+                    }
+                }
+                function update(){
+                    focusModeComboBox.initialized=false;
+                    focusModeComboBox.currentIndex=0;
+                    if (camera!=null) {
+                        for (var row=0; row < camera.focusModeOptions.length; row++){
+                            console.log("camera.focusMode: " + camera.focusMode + " camera.focusModeOptions[" + row + "]: " + camera.focusModeOptions[row]);
+                            if (camera.focusMode===camera.focusModeOptions[row]){
+                                focusModeComboBox.currentIndex=row;
+                                console.log("focusModeComboBox.currentIndex match : " + focusModeComboBox.currentIndex);
+                            }
+                        }
+                    }
+                    console.log("focusModeComboBox.currentIndex: " + focusModeComboBox.currentIndex);
+                    focusModeComboBox.initialized=true;
+                }
+
+                onCurrentItemChanged: {
+                    if (!initialized){
+                        console.log("NOT initialized");
+                        return;
+                    }
+                    camera.focusMode=camera.focusModeOptions[currentIndex];
+                }
+            }
+            ComboBox {
+                id: focusPointModeComboBox
+                width: parent.width
+                visible: camera!=null && camera.focusPointModeOptions.length > 0 &&
+                         (camera.focusMode === "Auto" || camera.focusMode === "Continuous" || camera.focusMode === "Macro")
+
+                property bool initialized: false
+
+                label: qsTr("Focus point mode")
+                menu: ContextMenu {
+                    Repeater {
+                        width: parent.width
+                        model: camera != null ? camera.focusPointModeOptions : []
+                        delegate: MenuItem {
+                            text: modelData
+                        }
+                    }
+                }
+                function update() {
+                    focusPointModeComboBox.initialized=false;
+                    focusPointModeComboBox.currentIndex=0;
+                    if (camera!=null) {
+                        for (var row=0; row < camera.focusPointModeOptions.length; row++){
+                            console.log("camera.focusPointMode: " + camera.focusPointMode + " camera.focusPointModeOptions[" + row + "]: " + camera.focusPointModeOptions[row]);
+                            if (camera.focusPointMode==camera.focusPointModeOptions[row]){
+                                focusPointModeComboBox.currentIndex=row;
+                            }
+                        }
+                    }
+                    focusPointModeComboBox.initialized=true;
+                }
+                onCurrentItemChanged: {
+                    if (!initialized){
+                        console.log("NOT initialized");
+                        return;
+                    }
+                    camera.focusPointMode=camera.focusPointModeOptions[currentIndex];
+                }
+            }
+            TextSwitch{
+                id: persistentFocusLockSwitch
+                width: parent.width
+                visible: camera!=null && camera.focusLockSupport
+                checked: camera!=null && camera.persistentFocusLock
+
+                onCheckedChanged: {
+                    if (camera!=null) {
+                        camera.persistentFocusLock = checked;
+                    }
+                }
+
+                text: qsTr("Persistent focus lock")
+            }
+            Label {
+                text: qsTr("Camera didn't support focus setting.")
+                width: parent.width - (Theme.horizontalPageMargin * Theme.paddingSmall)
+                wrapMode: Text.WordWrap
+                visible: !focusModeComboBox.visible && !focusPointModeComboBox.visible
+                x: Theme.horizontalPageMargin
+                font.pixelSize: Theme.fontSizeTiny
+                color: Theme.secondaryColor
+            }
+        }
+    }
+
+
+    Timer {
+        id: updateDelay
+        interval: 10
+        repeat: false
+        function update() {
+            focusPointModeComboBox.update();
+            focusModeComboBox.update();
+            maxShutterSpeedComboBox.update();
+            shutterSpeedComboBox.update();
+            apertureComboBox.update();
+            isoComboBox.update();
+        }
+
+        onTriggered: {
+            if (newTimeLapsePage.camera!=null) {
+                update();
+            }
+        }
+    }
+    Connections {
+        target: newTimeLapsePage
+        onCameraChanged: {
+            updateDelay.start();
+        }
+    }
+    Connections {
+        target: camera
+        onUpdate: {
+            updateDelay.start();
         }
     }
 

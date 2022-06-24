@@ -50,6 +50,59 @@
         <source>Directory</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Image count (0 is unlimited)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Capture duration: %1, 
+video duration: %2 @ 30 fps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ISO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aperture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adaptive shutter-speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min. shutter speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shutter speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max. shutter speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Camera didn&apos;t support ISO, aperture and shutter speed setting.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Focus mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Camera didn&apos;t support focus setting.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Persistent focus lock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Focus point mode</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Utils</name>

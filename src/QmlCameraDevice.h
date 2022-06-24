@@ -41,6 +41,22 @@ class QmlCameraDevice: public QObject {
   Q_PROPERTY(QString position READ getPosition NOTIFY update)
   Q_PROPERTY(QSize resolution READ getResolution NOTIFY update)
 
+  Q_PROPERTY(QStringList shutterSpeedOptions READ getShutterSpeedOptions NOTIFY update)
+  Q_PROPERTY(QStringList apertureOptions READ getApertureOptions NOTIFY update)
+  Q_PROPERTY(QStringList isoOptions READ getIsoOptions NOTIFY update)
+  Q_PROPERTY(QStringList focusModeOptions READ getFocusModeOptions NOTIFY update)
+  Q_PROPERTY(QStringList focusPointModeOptions READ getFocusPointModeOptions NOTIFY update)
+
+  Q_PROPERTY(QString shutterSpeed READ getShutterSpeed WRITE setShutterSpeed NOTIFY update)
+  Q_PROPERTY(QString aperture READ getAperture WRITE setAperture NOTIFY update)
+  Q_PROPERTY(QString iso READ getIso WRITE setIso NOTIFY update)
+  Q_PROPERTY(QString focusMode READ getFocusMode WRITE setFocusMode NOTIFY update)
+  Q_PROPERTY(QString focusPointMode READ getFocusPointMode WRITE setFocusPointMode NOTIFY update)
+  Q_PROPERTY(QPointF customFocusPoint READ getCustomFocusPoint WRITE setCustomFocusPoint NOTIFY update)
+
+  Q_PROPERTY(bool focusLockSupport READ getFocusLockSupport NOTIFY update)
+  Q_PROPERTY(bool persistentFocusLock READ getPersistentFocusLock WRITE setPersistentFocusLock NOTIFY update)
+
 signals:
   void update();
 
@@ -72,6 +88,30 @@ public:
   QSize getResolution() const {
     return dev->resolution();
   }
+
+  QStringList getShutterSpeedOptions();
+  QStringList getApertureOptions();
+  QStringList getIsoOptions();
+  QStringList getFocusModeOptions();
+  QStringList getFocusPointModeOptions();
+
+  QString getShutterSpeed();
+  QString getAperture();
+  QString getIso();
+  QString getFocusMode();
+  QString getFocusPointMode();
+  QPointF getCustomFocusPoint();
+
+  bool getFocusLockSupport();
+  bool getPersistentFocusLock();
+  void setPersistentFocusLock(bool);
+
+  void setShutterSpeed(const QString &shutterSpeed);
+  void setAperture(const QString &aperture);
+  void setIso(const QString &iso);
+  void setFocusMode(const QString &focusMode);
+  void setFocusPointMode(const QString &);
+  void setCustomFocusPoint(const QPointF &p);
 
   static QString positionString(QCamera::Position position);
 
