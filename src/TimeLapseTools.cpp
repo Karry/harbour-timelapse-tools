@@ -21,7 +21,7 @@
 #include <IconProvider.h>
 #include <TimeLapseTools.h>
 #include <CameraModel.h>
-#include <TimeLapseCapture.h>
+#include <QmlTimeLapseCapture.h>
 
 #include <Arguments.h>
 
@@ -120,7 +120,7 @@ Q_DECL_EXPORT int main(int argc, char* argv[]) {
   timelapse::registerQtMetaTypes();
 
   qmlRegisterType<CameraModel>("harbour.timelapsetools", 1, 0, "CameraModel");
-  qmlRegisterType<TimeLapseCapture>("harbour.timelapsetools", 1, 0, "TimeLapseCapture");
+  qmlRegisterType<QmlTimeLapseCapture>("harbour.timelapsetools", 1, 0, "TimeLapseCapture");
 
   {
     QString pictureDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
@@ -139,7 +139,7 @@ Q_DECL_EXPORT int main(int argc, char* argv[]) {
         storeDirectories << mountPoint + QDir::separator() + "Pictures" + QDir::separator() + ".timelapse";
       }
     }
-    TimeLapseCapture::setRecordDirectories(storeDirectories);
+    QmlTimeLapseCapture::setRecordDirectories(storeDirectories);
   }
 
   // setup ImageMagick, see https://imagemagick.org/script/resources.php

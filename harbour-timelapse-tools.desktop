@@ -12,6 +12,6 @@ Name=TimeLapse Tools
 BackupPathList=.local/share/cz.karry.timelapse/TimeLapseTools/:.config/cz.karry.timelapse/TimeLapseTools/
 
 [X-Sailjail]
-Permissions=Internet;Audio;RemovableMedia;Documents
+Permissions=Audio;Camera;RemovableMedia;Pictures;Videos
 OrganizationName=cz.karry.timelapse
 ApplicationName=TimeLapseTools

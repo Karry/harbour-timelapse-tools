@@ -378,6 +378,13 @@ Page {
                     }
                     isoComboBox.initialized=true;
                 }
+                onCurrentItemChanged: {
+                    if (!initialized){
+                        console.log("NOT initialized");
+                        return;
+                    }
+                    camera.iso=camera.isoOptions[currentIndex];
+                }
             }
             ComboBox {
                 id: apertureComboBox
@@ -407,6 +414,13 @@ Page {
                         }
                     }
                     apertureComboBox.initialized=false;
+                }
+                onCurrentItemChanged: {
+                    if (!initialized){
+                        console.log("NOT initialized");
+                        return;
+                    }
+                    camera.aperture=camera.apertureOptions[currentIndex];
                 }
             }
             TextSwitch{
@@ -633,6 +647,41 @@ Page {
     onOrientationChanged: {
         console.log("Orientation: " + orientation);
         //viewFinder.updateOrientation();
+    }
+
+    Rectangle {
+        id: captureCircle
+        height: Theme.itemSizeMedium
+        width: height
+        radius: width / 2
+
+        anchors{
+            right: parent.right
+            bottom: parent.bottom
+            rightMargin: Theme.horizontalPageMargin
+            bottomMargin: Theme.paddingMedium
+        }
+
+        border.width: 5
+        border.color: "white"
+        color: "red"
+        visible: camera != null
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                pageStack.replace(Qt.resolvedUrl("Capture.qml"),
+                                  {
+                                      camera: newTimeLapsePage.camera,
+                                      interval: parseInt(intervalField.text, 10),
+                                      baseDir: destinationDirectoryComboBox.selected,
+                                      count: parseInt(imageCntField.text, 10),
+                                      adaptiveShutterSpeed: adaptiveShutterSpeedSwitch.checked,
+                                      shutterSpeed: camera.shutterSpeedOptions[shutterSpeedComboBox.currentIndex],
+                                      maxShutterSpeed: camera.shutterSpeedOptions[maxShutterSpeedComboBox.currentIndex]
+                                  });
+            }
+        }
     }
 
 }

@@ -17,31 +17,30 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#pragma once
+#include <QmlTimeLapseCapture.h>
 
 #include <TimeLapse/pipeline_cpt.h>
 
-#include <QObject>
-#include <QStringList>
+static QStringList recordDirectories;
 
-class TimeLapseCapture: public QObject {
-  Q_OBJECT
+QmlTimeLapseCapture::QmlTimeLapseCapture():
+  timelapse::TimeLapseCapture(&err, &verboseOutput), // err and verboseOutput are not initialised in TimeLapseCapture constructor
+  err(stderr), verboseOutput(stdout)
+{
+}
 
-  Q_PROPERTY(QStringList recordDirectories READ getRecordDirectories)
+void QmlTimeLapseCapture::start() {
+  if (_adaptiveShutterSpeed) {
+    setShutterSpeedChangeThreshold(2);
+  }
+  setOutput(QDir(_baseDir + QDir::separator() + _dir));
+  timelapse::TimeLapseCapture::start();
+}
 
-public slots :
+QStringList QmlTimeLapseCapture::getRecordDirectories() const {
+  return recordDirectories;
+}
 
-public:
-  TimeLapseCapture() = default;
-  TimeLapseCapture(const TimeLapseCapture&) = delete;
-  TimeLapseCapture(TimeLapseCapture&&) = delete;
-  ~TimeLapseCapture() override = default;
-  TimeLapseCapture& operator=(const TimeLapseCapture&) = delete;
-  TimeLapseCapture& operator=(TimeLapseCapture&&) = delete;
-
-  QStringList getRecordDirectories() const;
-
-  static void setRecordDirectories(const QStringList &l);
-
-private:
-};
+void QmlTimeLapseCapture::setRecordDirectories(const QStringList &l) {
+  recordDirectories=l;
+}

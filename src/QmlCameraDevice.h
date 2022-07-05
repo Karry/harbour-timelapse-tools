@@ -113,6 +113,10 @@ public:
   void setFocusPointMode(const QString &);
   void setCustomFocusPoint(const QPointF &p);
 
+  QSharedPointer<timelapse::CaptureDevice> timelapseDevice() {
+    return dev;
+  }
+
   static QString positionString(QCamera::Position position);
 
 private:

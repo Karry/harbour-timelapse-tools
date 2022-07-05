@@ -135,7 +135,7 @@ set(HEADER_FILES
     src/CameraModel.h
     src/IconProvider.h
     src/QmlCameraDevice.h
-    src/TimeLapseCapture.h
+    src/QmlTimeLapseCapture.h
     src/TimeLapseTools.h
     )
 
@@ -143,6 +143,7 @@ set(HEADER_FILES
 # find qml -type f
 set(QML_FILES
     qml/custom/Utils.js
+    qml/pages/Capture.qml
     qml/pages/Cover.qml
     qml/pages/MainPage.qml
     qml/pages/NewTimeLapsePage.qml
@@ -153,7 +154,7 @@ set(SOURCE_FILES
     src/osmscout/util/String.cpp
     src/CameraModel.cpp
     src/QmlCameraDevice.cpp
-    src/TimeLapseCapture.cpp
+    src/QmlTimeLapseCapture.cpp
     src/TimeLapseTools.cpp)
 
 # XML files with translated phrases.
