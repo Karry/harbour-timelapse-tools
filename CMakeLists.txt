@@ -136,6 +136,7 @@ set(HEADER_FILES
     src/IconProvider.h
     src/QmlCameraDevice.h
     src/QmlTimeLapseCapture.h
+    src/TimeLapseModel.h
     src/TimeLapseTools.h
     )
 
@@ -155,6 +156,7 @@ set(SOURCE_FILES
     src/CameraModel.cpp
     src/QmlCameraDevice.cpp
     src/QmlTimeLapseCapture.cpp
+    src/TimeLapseModel.cpp
     src/TimeLapseTools.cpp)
 
 # XML files with translated phrases.

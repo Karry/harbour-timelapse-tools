@@ -17,7 +17,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-import QtQuick 2.0
+import QtQuick 2.5
 import Sailfish.Silica 1.0
 import Sailfish.Share 1.0
 import Nemo.KeepAlive 1.2
@@ -31,21 +31,60 @@ import harbour.timelapsetools 1.0
 Page {
     id: mainPage
 
-    Column{
-        anchors.margins: Theme.horizontalPageMargin
-        y: Theme.paddingLarge
-        width: parent.width
-        spacing: Theme.paddingLarge
+    SilicaListView {
+        id: listView
 
-        Button {
-            anchors {
-                horizontalCenter: parent.horizontalCenter
+        anchors{
+            fill: parent
+            //left: parent.left
+            //right: parent.right
+            //bottom: parent.bottom
+            //top: newButtonColumn.bottom
+        }
+
+        clip: true
+        spacing: Theme.paddingMedium
+
+        header: Rectangle {
+            id: newButtonColumn
+
+            //anchors.margins: Theme.horizontalPageMargin
+            //topPadding: Theme.paddingLarge
+            //bottomPadding: Theme.paddingLarge
+            //padding: Theme.horizontalPageMargin
+            //rightPadding: Theme.horizontalPageMargin
+
+            color: "transparent"
+            width: parent.width
+            height: newTimeLapseButton.height + 2*Theme.paddingLarge
+            //spacing: Theme.paddingLarge
+
+            Button {
+                id: newTimeLapseButton
+                y: Theme.paddingLarge
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    //margins: Theme.paddingLarge
+                }
+                text: qsTr("New TimeLapse")
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("NewTimeLapsePage.qml"),{})
+                }
             }
-            text: qsTr("New TimeLapse")
-            onClicked: {
-                pageStack.push(Qt.resolvedUrl("NewTimeLapsePage.qml"),{})
+        }
+
+
+        VerticalScrollDecorator {}
+
+        model: TimeLapseModel {}
+        delegate:  ListItem {
+            width: listView.width
+            //height: timeLapseName.height
+            Label {
+                id: timeLapseName
+                x: Theme.paddingMedium
+                text: model.name
             }
         }
     }
-
 }

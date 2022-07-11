@@ -22,6 +22,7 @@
 #include <TimeLapseTools.h>
 #include <CameraModel.h>
 #include <QmlTimeLapseCapture.h>
+#include <TimeLapseModel.h>
 
 #include <Arguments.h>
 
@@ -121,6 +122,7 @@ Q_DECL_EXPORT int main(int argc, char* argv[]) {
 
   qmlRegisterType<CameraModel>("harbour.timelapsetools", 1, 0, "CameraModel");
   qmlRegisterType<QmlTimeLapseCapture>("harbour.timelapsetools", 1, 0, "TimeLapseCapture");
+  qmlRegisterType<TimeLapseModel>("harbour.timelapsetools", 1, 0, "TimeLapseModel");
 
   {
     QString pictureDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
