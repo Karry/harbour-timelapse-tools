@@ -85,6 +85,14 @@ Page {
                 x: Theme.paddingMedium
                 text: model.name
             }
+
+            onClicked: {
+                pageStack.push(Qt.resolvedUrl("Assembly.qml"),
+                               {
+                                   name: model.name,
+                                   path: model.path
+                               })
+            }
         }
     }
 }

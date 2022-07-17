@@ -135,6 +135,7 @@ set(HEADER_FILES
     src/CameraModel.h
     src/IconProvider.h
     src/QmlCameraDevice.h
+    src/QmlTimeLapseAssembly.h
     src/QmlTimeLapseCapture.h
     src/TimeLapseModel.h
     src/TimeLapseTools.h
@@ -144,6 +145,7 @@ set(HEADER_FILES
 # find qml -type f
 set(QML_FILES
     qml/custom/Utils.js
+    qml/pages/Assembly.qml
     qml/pages/Capture.qml
     qml/pages/Cover.qml
     qml/pages/MainPage.qml
@@ -155,6 +157,7 @@ set(SOURCE_FILES
     src/osmscout/util/String.cpp
     src/CameraModel.cpp
     src/QmlCameraDevice.cpp
+    src/QmlTimeLapseAssembly.cpp
     src/QmlTimeLapseCapture.cpp
     src/TimeLapseModel.cpp
     src/TimeLapseTools.cpp)

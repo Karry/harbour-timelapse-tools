@@ -21,6 +21,7 @@
 #include <IconProvider.h>
 #include <TimeLapseTools.h>
 #include <CameraModel.h>
+#include <QmlTimeLapseAssembly.h>
 #include <QmlTimeLapseCapture.h>
 #include <TimeLapseModel.h>
 
@@ -121,13 +122,18 @@ Q_DECL_EXPORT int main(int argc, char* argv[]) {
   timelapse::registerQtMetaTypes();
 
   qmlRegisterType<CameraModel>("harbour.timelapsetools", 1, 0, "CameraModel");
+  qmlRegisterType<QmlTimeLapseAssembly>("harbour.timelapsetools", 1, 0, "TimeLapseAssembly");
   qmlRegisterType<QmlTimeLapseCapture>("harbour.timelapsetools", 1, 0, "TimeLapseCapture");
   qmlRegisterType<TimeLapseModel>("harbour.timelapsetools", 1, 0, "TimeLapseModel");
 
   {
+    QStringList videoDirectories;
+    videoDirectories << QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+
     QString pictureDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
     QStringList storeDirectories;
     storeDirectories << pictureDir + QDir::separator() + ".timelapse";
+
     for (const QStorageInfo &storage : QStorageInfo::mountedVolumes()) {
 
       QString mountPoint = storage.rootPath();
@@ -139,9 +145,11 @@ Q_DECL_EXPORT int main(int argc, char* argv[]) {
 
         qDebug() << "Found storage:" << mountPoint;
         storeDirectories << mountPoint + QDir::separator() + "Pictures" + QDir::separator() + ".timelapse";
+        videoDirectories << mountPoint + QDir::separator() + "Videos";
       }
     }
     QmlTimeLapseCapture::setRecordDirectories(storeDirectories);
+    QmlTimeLapseAssembly::setVideoDirectories(videoDirectories);
   }
 
   // setup ImageMagick, see https://imagemagick.org/script/resources.php
