@@ -48,6 +48,9 @@
 #include <sstream>
 #include <QStorageInfo>
 
+#include <magick/magick.h>
+#include <magick/image.h>
+
 #ifndef TIMELAPSE_TOOLS_VERSION_STRING
 static_assert(false, "TIMELAPSE_TOOLS_VERSION_STRING should be defined by build system");
 #endif

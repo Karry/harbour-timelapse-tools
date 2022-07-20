@@ -273,7 +273,7 @@ Page {
                 id: destinationDirectoryComboBox
 
                 property bool initialized: false
-                property string selected: updateDirectory
+                property string selected: ""
                 property ListModel directories: ListModel {}
 
                 label: qsTr("Directory")

@@ -2,6 +2,65 @@
 <!DOCTYPE TS>
 <TS version="2.1">
 <context>
+    <name>Assembly</name>
+    <message>
+        <source>Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assembly time lapse %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatic video lenght</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time lapse has %1 pictures, video length: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Duration [seconds]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dynamic frame interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Intervals between pictures in video are determited from real capture time.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blend frames</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deflickering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deflicker window size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assembly</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Capture</name>
     <message>
         <source>Capturing details</source>

@@ -42,6 +42,9 @@ QmlTimeLapseAssembly::QmlTimeLapseAssembly():
 }
 
 void QmlTimeLapseAssembly::setSource(const QString &s) {
+  if (s == _source) {
+    return;
+  }
   _source = s;
   QDir d(_source);
   QFileInfoList l = d.entryInfoList(QDir::Files, QDir::Name);
@@ -53,6 +56,7 @@ void QmlTimeLapseAssembly::setSource(const QString &s) {
     }
   }
   emit inputImgCntChanged(inputImgCnt);
+  emit sourceChanged(_source);
 }
 
 void QmlTimeLapseAssembly::onError(const QString &msg) {
@@ -75,6 +79,8 @@ void QmlTimeLapseAssembly::cleanup() {
 
 void QmlTimeLapseAssembly::start() {
   // TODO: unpack ffmpeg
+  // tar -xf /usr/share/harbour-timelapse-tools/bin/ffmpeg.tar > .cache/cz.karry.timelapse/TimeLapseTools/ffmpeg
+  // chmod +x .cache/cz.karry.timelapse/TimeLapseTools/ffmpeg
   using namespace timelapse;
 
   // check temp dir
@@ -162,7 +168,9 @@ void QmlTimeLapseAssembly::start() {
 
   *pipeline << new VideoAssembly(QDir(_tempDir->path()), &verboseOutput, &err, false,
                                  QFileInfo(_dir + QDir::separator() + _name),
-                                 _width, _height, _fps, _bitrate, _codec);
+                                 _width, _height, _fps, _bitrate, _codec,
+                                 // TODO: evaluate the binary path
+                                 "/home/defaultuser/.cache/cz.karry.timelapse/TimeLapseTools/ffmpeg");
 
   connect(pipeline, &Pipeline::done, this, &QmlTimeLapseAssembly::cleanup);
   connect(pipeline, &Pipeline::error, this, &QmlTimeLapseAssembly::onError);

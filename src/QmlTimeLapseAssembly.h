@@ -50,17 +50,21 @@ public:
   };
   Q_ENUM(Profile)
 
-  Q_PROPERTY(QString source READ getSource WRITE setSource)
-  Q_PROPERTY(QString dir READ getDir WRITE setDir)
-  Q_PROPERTY(QString name READ getName WRITE setName)
+
+  Q_PROPERTY(QStringList videoDirectories READ getVideoDirectories)
+
+  Q_PROPERTY(QString source READ getSource WRITE setSource NOTIFY sourceChanged)
+  Q_PROPERTY(QString dir READ getDir WRITE setDir NOTIFY dirChanged)
+  Q_PROPERTY(QString name READ getName WRITE setName NOTIFY nameChanged)
   Q_PROPERTY(int inputImageCount READ getInputImgCnt NOTIFY inputImgCntChanged)
-  Q_PROPERTY(Deflicker deflicker READ getDeflicker WRITE setDeflicker)
-  Q_PROPERTY(Profile profile READ getProfile WRITE setProfile)
-  Q_PROPERTY(qreal fps READ getFps WRITE setFps)
-  Q_PROPERTY(qreal length READ getLength WRITE setLength)
-  Q_PROPERTY(bool noStrictInterval READ getNoStrictInterval WRITE setNoStrictInterval)
-  Q_PROPERTY(bool blendFrames READ getBlendFrames WRITE setBlendFrames)
-  Q_PROPERTY(bool processing READ getProcessing WRITE setProcessing NOTIFY processingChanged)
+  Q_PROPERTY(Deflicker deflicker READ getDeflicker WRITE setDeflicker NOTIFY deflickerChanged)
+  Q_PROPERTY(int deflickerWmaCount READ getDeflickerWmaCount WRITE setDeflickerWmaCount NOTIFY deflickerWmaCountChanged)
+  Q_PROPERTY(Profile profile READ getProfile WRITE setProfile NOTIFY profileChanged)
+  Q_PROPERTY(qreal fps READ getFps WRITE setFps NOTIFY fpsChanged)
+  Q_PROPERTY(qreal length READ getLength WRITE setLength NOTIFY lengthChanged)
+  Q_PROPERTY(bool noStrictInterval READ getNoStrictInterval WRITE setNoStrictInterval NOTIFY noStrictIntervalChanged)
+  Q_PROPERTY(bool blendFrames READ getBlendFrames WRITE setBlendFrames NOTIFY blendFramesChanged)
+  Q_PROPERTY(bool processing READ getProcessing NOTIFY processingChanged)
 
 public slots:
   void start();
@@ -73,7 +77,17 @@ signals:
   void finish();
   void processingChanged();
 
+  void sourceChanged(QString);
+  void dirChanged(QString);
+  void nameChanged(QString);
   void inputImgCntChanged(int cnt);
+  void deflickerChanged(Deflicker);
+  void deflickerWmaCountChanged(int);
+  void profileChanged(Profile);
+  void fpsChanged(qreal);
+  void lengthChanged(qreal);
+  void noStrictIntervalChanged(bool);
+  void blendFramesChanged(bool);
 
 public:
   QmlTimeLapseAssembly();
@@ -92,13 +106,19 @@ public:
     return _dir;
   }
   void setDir(const QString &s) {
-    _dir = s;
+    if (s != _dir) {
+      _dir = s;
+      emit dirChanged(_dir);
+    }
   }
   QString getName() const {
     return _name;
   }
   void setName(const QString &n) {
-    _name = n;
+    if (n != _name) {
+      _name = n;
+      emit nameChanged(_name);
+    }
   }
 
   int getInputImgCnt() const {
@@ -109,43 +129,68 @@ public:
     return _deflicker;
   }
   void setDeflicker(Deflicker deflicker) {
-    _deflicker = deflicker;
+    if (_deflicker != deflicker) {
+      _deflicker = deflicker;
+      emit deflickerChanged(_deflicker);
+    }
+  }
+  int getDeflickerWmaCount() const {
+    return wmaCount;
+  }
+  void setDeflickerWmaCount(int c) {
+    if (c != wmaCount) {
+      wmaCount = c;
+      emit deflickerWmaCountChanged(wmaCount);
+    }
   }
   Profile getProfile() const {
     return _profile;
   }
   void setProfile(Profile profile) {
-    _profile = profile;
+    if (_profile != profile) {
+      _profile = profile;
+      emit profileChanged(_profile);
+    }
   }
   qreal getFps() const {
     return _fps;
   }
   void setFps(qreal fps) {
-    _fps = fps;
+    if (fps != _fps) {
+      _fps = fps;
+      emit fpsChanged(_fps);
+    }
   }
   qreal getLength() const {
     return _length;
   }
   void setLength(qreal length) {
-    _length = length;
+    if (length != _length) {
+      _length = length;
+      emit lengthChanged(_length);
+    }
   }
   bool getNoStrictInterval() const {
     return _noStrictInterval;
   }
   void setNoStrictInterval(bool noStrictInterval) {
-    _noStrictInterval = noStrictInterval;
+    if (_noStrictInterval != noStrictInterval) {
+      _noStrictInterval = noStrictInterval;
+      emit noStrictIntervalChanged(_noStrictInterval);
+    }
   }
   bool getBlendFrames() const {
     return _blendFrames;
   }
   void setBlendFrames(bool blendFrames) {
-    _blendFrames = blendFrames;
+    if (_blendFrames != blendFrames) {
+      _blendFrames = blendFrames;
+      emit blendFramesChanged(_blendFrames);
+    }
   }
+
   bool getProcessing() const {
     return _processing;
-  }
-  void setProcessing(bool b) {
-    _processing = b;
   }
 
   QStringList getVideoDirectories() const;
@@ -166,7 +211,7 @@ private:
   /** length of output video in seconds.
    * if length < 0, then length will be count of inputs images / fps
    */
-  qreal _length=0;
+  qreal _length=-1;
 
   /* It is useful when time interval between images is not fixed.
    * Input image to output video frame mapping will be computed from image
