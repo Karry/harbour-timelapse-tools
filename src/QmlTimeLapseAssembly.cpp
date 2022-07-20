@@ -79,7 +79,8 @@ void QmlTimeLapseAssembly::cleanup() {
 
 void QmlTimeLapseAssembly::start() {
   // TODO: unpack ffmpeg
-  // tar -xf /usr/share/harbour-timelapse-tools/bin/ffmpeg.tar > .cache/cz.karry.timelapse/TimeLapseTools/ffmpeg
+  // cd .cache/cz.karry.timelapse/TimeLapseTools/
+  // tar -xf /usr/share/harbour-timelapse-tools/bin/ffmpeg.tar
   // chmod +x .cache/cz.karry.timelapse/TimeLapseTools/ffmpeg
   using namespace timelapse;
 
@@ -167,7 +168,7 @@ void QmlTimeLapseAssembly::start() {
   *pipeline << new WriteFrame(QDir(_tempDir->path()), &verboseOutput, false);
 
   *pipeline << new VideoAssembly(QDir(_tempDir->path()), &verboseOutput, &err, false,
-                                 QFileInfo(_dir + QDir::separator() + _name),
+                                 QFileInfo(_dir + QDir::separator() + _name + ".mp4"),
                                  _width, _height, _fps, _bitrate, _codec,
                                  // TODO: evaluate the binary path
                                  "/home/defaultuser/.cache/cz.karry.timelapse/TimeLapseTools/ffmpeg");
