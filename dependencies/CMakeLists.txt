@@ -112,8 +112,8 @@ ExternalProject_Add(ImageMagick
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
     CONFIGURE_COMMAND cmake -E env
         "PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig"
-        "CFLAGS=-I<INSTALL_DIR>/include"
-        "CPPFLAGS=-I<INSTALL_DIR>/include"
+        "CFLAGS=-I<INSTALL_DIR>/include   -DMAGICKCORE_CONFIGURE_PATH=\\\"/usr/share/harbour-timelapse-tools/etc/ImageMagick-6/\\\" -DMAGICKCORE_LIBRARY_PATH=\\\"/usr/share/harbour-timelapse-tools/lib/ImageMagick-6.9.12/\\\" -DMAGICKCORE_SHARE_PATH=\\\"/usr/share/harbour-timelapse-tools/share/ImageMagick-6/\\\" -DMAGICKCORE_DOCUMENTATION_PATH=\\\"/usr/share/harbour-timelapse-tools/share/doc/ImageMagick-6/\\\""
+        "CPPFLAGS=-I<INSTALL_DIR>/include -DMAGICKCORE_CONFIGURE_PATH=\\\"/usr/share/harbour-timelapse-tools/etc/ImageMagick-6/\\\" -DMAGICKCORE_LIBRARY_PATH=\\\"/usr/share/harbour-timelapse-tools/lib/ImageMagick-6.9.12/\\\" -DMAGICKCORE_SHARE_PATH=\\\"/usr/share/harbour-timelapse-tools/share/ImageMagick-6/\\\" -DMAGICKCORE_DOCUMENTATION_PATH=\\\"/usr/share/harbour-timelapse-tools/share/doc/ImageMagick-6/\\\""
         "LDFLAGS=-L<INSTALL_DIR>/lib -Wl,-rpath=/usr/share/harbour-timelapse-tools/lib"
         <SOURCE_DIR>/configure --prefix <INSTALL_DIR> --with-sysroot=<INSTALL_DIR> --with-modules --without-freetype --disable-openmp
     BUILD_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT}

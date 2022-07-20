@@ -237,7 +237,7 @@ install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/etc/Image
 
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/lib/ImageMagick-6.9.12
     DESTINATION share/${HARBOUR_APP_NAME}/lib
-    FILES_MATCHING PATTERN "*.so" PATTERN "*.xml")
+    FILES_MATCHING PATTERN "*.so" PATTERN "*.la" PATTERN "*.xml")
 
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/share/ImageMagick-6
     DESTINATION share/${HARBOUR_APP_NAME}/share)
