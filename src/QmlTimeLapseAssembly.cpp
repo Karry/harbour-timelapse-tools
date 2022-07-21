@@ -28,6 +28,8 @@
 
 #include <QTextStream>
 
+#include <cassert>
+
 static QStringList videoDirectories;
 
 QmlTimeLapseAssembly::QmlTimeLapseAssembly():
@@ -95,8 +97,8 @@ void QmlTimeLapseAssembly::start() {
   _tempDir->setAutoRemove(true);
   qDebug() << "Using temp directory " << _tempDir->path();
 
-  int _width;
-  int _height;
+  int _width=-1;
+  int _height=-1;
   QString _bitrate;
   QString _codec;
   switch (_profile) {
@@ -124,6 +126,8 @@ void QmlTimeLapseAssembly::start() {
       _bitrate = "60000k";
       _codec = "libx265";
       break;
+    default:
+      assert(false);
   }
 
   // build processing pipeline
