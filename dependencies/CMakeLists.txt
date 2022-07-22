@@ -131,6 +131,46 @@ target_compile_options(ImageMagick::ImageMagick INTERFACE -fopenmp -DMAGICKCORE_
 add_dependencies(ImageMagick::ImageMagick ImageMagick)
 
 # ==================================================================================================
+# x265
+
+set(x265_LIBRARY
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx265.so
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx265.so.179)
+
+ExternalProject_Add(x265
+    URL "${CMAKE_CURRENT_SOURCE_DIR}/x265_3.2.1.tar.gz"
+    URL_HASH SHA256=fb9badcf92364fd3567f8b5aa0e5e952aeea7a39a2b864387cec31e3b58cbbcc
+    INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DENABLE_PIC=ON
+    SOURCE_SUBDIR "source"
+    BUILD_BYPRODUCTS ${x265_LIBRARY}
+    TEST_COMMAND ""
+    )
+
+# ==================================================================================================
+# x264
+
+set(x264_LIBRARY
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx264.so
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx264.so.164)
+
+ExternalProject_Add(x264
+    URL "${CMAKE_CURRENT_SOURCE_DIR}/x264-master20220721.tar.bz2"
+    URL_HASH SHA256=876383c0bcc7bde562d2db350c4754114e8c4c0ce1228018cad0cc5f4ce1253b
+    INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
+    CONFIGURE_COMMAND cmake -E env
+        "PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig"
+        "CFLAGS=-I<INSTALL_DIR>/include"
+        "CPPFLAGS=-I<INSTALL_DIR>/include"
+        "LDFLAGS=-L<INSTALL_DIR>/lib -Wl,-rpath=/usr/share/harbour-timelapse-tools/lib"
+        <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --enable-shared --disable-asm
+    BUILD_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT}
+    INSTALL_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT} install
+    BUILD_BYPRODUCTS ${x264_LIBRARY}
+    TEST_COMMAND ""
+    )
+
+# ==================================================================================================
 # ffmpeg
 
 set(ffmpeg_BIN
@@ -145,12 +185,12 @@ ExternalProject_Add(ffmpeg
         "CFLAGS=-I<INSTALL_DIR>/include"
         "CPPFLAGS=-I<INSTALL_DIR>/include"
         "LDFLAGS=-L<INSTALL_DIR>/lib -Wl,-rpath=/usr/share/harbour-timelapse-tools/lib"
-        <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-x86asm --enable-gpl
+        <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-x86asm --enable-gpl --enable-libx264 --enable-libx265
     BUILD_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT} install
     TEST_COMMAND ""
     BUILD_BYPRODUCTS ${ffmpeg_BIN}
-    DEPENDS libjpeg
+    DEPENDS libjpeg x264 x265
     )
 
 # ==================================================================================================
@@ -273,6 +313,8 @@ add_dependencies(TimeLapse::TimeLapse TimeLapse)
 # ==================================================================================================
 
 set(DEP_LIBS
+    ${x264_LIBRARY}
+    ${x265_LIBRARY}
     ${vidstab_LIBRARY}
     ${ImageMagick_LIBRARY}
     ${v4lUtils_LIBRARY}
