@@ -120,7 +120,7 @@ ExternalProject_Add(ImageMagick
     INSTALL_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT} install
     TEST_COMMAND ""
     BUILD_BYPRODUCTS ${ImageMagick_LIBRARY}
-    DEPENDS libgd libjpeg
+    DEPENDS libgd libjpeg libltdl
     )
 
 add_library(ImageMagick::ImageMagick INTERFACE IMPORTED GLOBAL)
