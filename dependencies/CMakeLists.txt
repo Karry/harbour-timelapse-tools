@@ -265,6 +265,9 @@ ExternalProject_Add(GPhoto2
         "PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig"
         DEFAULT_CAMLIBS=/usr/share/harbour-timelapse-tools/lib/libgphoto2/2.5.29
         DEFAULT_IOLIBS=/usr/share/harbour-timelapse-tools/lib/libgphoto2_port/0.12.0
+        "CFLAGS=-I<INSTALL_DIR>/include"
+        "CPPFLAGS=-I<INSTALL_DIR>/include"
+        "LDFLAGS=-L<INSTALL_DIR>/lib -Wl,-rpath=/usr/share/harbour-timelapse-tools/lib"
         <SOURCE_DIR>/configure --prefix <INSTALL_DIR>
     BUILD_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT} install
