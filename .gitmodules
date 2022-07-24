@@ -5,3 +5,9 @@
 [submodule "dependencies/TimeLapse"]
 	path = dependencies/TimeLapse
 	url = git@github.com:Karry/TimeLapse.git
+[submodule "dependencies/tar"]
+	path = dependencies/tar
+	url = https://github.com/Karry/tar.git
+[submodule "dependencies/io_tools"]
+	path = dependencies/io_tools
+	url = https://github.com/Karry/io_tools.git

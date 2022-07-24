@@ -183,6 +183,13 @@ video duration: %2 @ 30 fps</source>
     </message>
 </context>
 <context>
+    <name>QmlTimeLapseAssembly</name>
+    <message>
+        <source>Failed to unpack ffmpeg: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Utils</name>
     <message>
         <source>Home</source>

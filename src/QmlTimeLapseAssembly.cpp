@@ -26,9 +26,15 @@
 #include <TimeLapse/pipeline_video_assembly.h>
 #include <TimeLapse/pipeline_write_frame.h>
 
+#include <QProcess>
 #include <QTextStream>
+#include <QStandardPaths>
+
+#include <istream> // have to be before tar.hpp
+#include <tar/tar.hpp>
 
 #include <cassert>
+#include <algorithm>
 
 static QStringList videoDirectories;
 
@@ -80,11 +86,29 @@ void QmlTimeLapseAssembly::cleanup() {
 }
 
 void QmlTimeLapseAssembly::start() {
-  // TODO: unpack ffmpeg
+  using namespace timelapse;
+
+  // unpack ffmpeg
   // cd .cache/cz.karry.timelapse/TimeLapseTools/
   // tar -xf /usr/share/harbour-timelapse-tools/bin/ffmpeg.tar
-  // chmod +x .cache/cz.karry.timelapse/TimeLapseTools/ffmpeg
-  using namespace timelapse;
+  QString cacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+  QString ffmpegBinary = cacheDir + QDir::separator() + "ffmpeg";
+  try {
+    tar::tar_reader tar("/usr/share/harbour-timelapse-tools/bin/ffmpeg.tar");
+    std::istream &is = tar.get("ffmpeg");
+    std::ofstream os(ffmpegBinary.toStdString().c_str(), std::ios_base::out | std::ios_base::binary);
+    std::copy(istreambuf_iterator<char>(is), istreambuf_iterator<char>(), ostreambuf_iterator<char>(os));
+    os.close();
+    if (!is.good() || !os.good()) {
+      throw std::runtime_error("IO error");
+    }
+  } catch  (const std::exception &e) {
+    qWarning() << "Failed to unpack ffmpeg:" << e.what();
+    onError(tr("Failed to unpack ffmpeg: %1").arg(e.what()));
+    return;
+  }
+
+  QFile(ffmpegBinary).setPermissions(QFile::ExeGroup | QFile::ExeOther | QFile::ExeUser);
 
   // check temp dir
   _tempDir = new QTemporaryDir(_source + QDir::separator() + ".tmp");
@@ -174,8 +198,7 @@ void QmlTimeLapseAssembly::start() {
   *pipeline << new VideoAssembly(QDir(_tempDir->path()), &verboseOutput, &err, false,
                                  QFileInfo(_dir + QDir::separator() + _name + ".mp4"),
                                  _width, _height, _fps, _bitrate, _codec,
-                                 // TODO: evaluate the binary path
-                                 "/home/defaultuser/.cache/cz.karry.timelapse/TimeLapseTools/ffmpeg");
+                                 ffmpegBinary);
 
   connect(pipeline, &Pipeline::done, this, &QmlTimeLapseAssembly::cleanup);
   connect(pipeline, &Pipeline::error, this, &QmlTimeLapseAssembly::onError);

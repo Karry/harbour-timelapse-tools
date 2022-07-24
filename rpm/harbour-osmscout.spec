@@ -34,6 +34,7 @@ BuildRequires:  chrpath
 BuildRequires:  desktop-file-utils
 BuildRequires:  git
 BuildRequires:  qt5-qttools-linguist
+BuildRequires:  bsdtar
 
 %description
 TimeLapse tools is app for capturing and assembling timelapse videos.

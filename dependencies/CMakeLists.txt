@@ -330,7 +330,10 @@ set(DEP_LIBS
     PARENT_SCOPE)
 
 add_custom_target(tarFfmpeg ALL
-    COMMAND tar -cf ffmpeg.tar ffmpeg
+    # unpacker supports just old posix tar format
+    # we relly on the fact that Sailfish SDK contains Busybox tar
+    # for gnu tar use --format=ustar
+    COMMAND bsdtar --format=ustar -cf ffmpeg.tar ffmpeg
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installroot/bin
     BYPRODUCTS "${ffmpeg_BIN}.tar"
     DEPENDS ffmpeg)
