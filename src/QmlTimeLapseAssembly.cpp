@@ -93,22 +93,23 @@ void QmlTimeLapseAssembly::start() {
   // tar -xf /usr/share/harbour-timelapse-tools/bin/ffmpeg.tar
   QString cacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
   QString ffmpegBinary = cacheDir + QDir::separator() + "ffmpeg";
-  try {
-    tar::tar_reader tar("/usr/share/harbour-timelapse-tools/bin/ffmpeg.tar");
-    std::istream &is = tar.get("ffmpeg");
-    std::ofstream os(ffmpegBinary.toStdString().c_str(), std::ios_base::out | std::ios_base::binary);
-    std::copy(istreambuf_iterator<char>(is), istreambuf_iterator<char>(), ostreambuf_iterator<char>(os));
-    os.close();
-    if (!is.good() || !os.good()) {
-      throw std::runtime_error("IO error");
+  if (!QFileInfo(ffmpegBinary).exists()) {
+    try {
+      tar::tar_reader tar("/usr/share/harbour-timelapse-tools/bin/ffmpeg.tar");
+      std::istream &is = tar.get("ffmpeg");
+      std::ofstream os(ffmpegBinary.toStdString().c_str(), std::ios_base::out | std::ios_base::binary);
+      std::copy(istreambuf_iterator<char>(is), istreambuf_iterator<char>(), ostreambuf_iterator<char>(os));
+      os.close();
+      if (!is.good() || !os.good()) {
+        throw std::runtime_error("IO error");
+      }
+    } catch  (const std::exception &e) {
+      qWarning() << "Failed to unpack ffmpeg:" << e.what();
+      onError(tr("Failed to unpack ffmpeg: %1").arg(e.what()));
+      return;
     }
-  } catch  (const std::exception &e) {
-    qWarning() << "Failed to unpack ffmpeg:" << e.what();
-    onError(tr("Failed to unpack ffmpeg: %1").arg(e.what()));
-    return;
+    QFile(ffmpegBinary).setPermissions(QFile::ExeGroup | QFile::ExeOther | QFile::ExeUser);
   }
-
-  QFile(ffmpegBinary).setPermissions(QFile::ExeGroup | QFile::ExeOther | QFile::ExeUser);
 
   // check temp dir
   _tempDir = new QTemporaryDir(_source + QDir::separator() + ".tmp");
