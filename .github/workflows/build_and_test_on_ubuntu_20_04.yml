@@ -19,7 +19,7 @@ jobs:
           submodules: recursive
       - name: Install dependencies
         run:  "sudo apt-get update && sudo apt-get install -y --fix-broken
-               git make libtool pkg-config cmake
+               git make libtool pkg-config cmake libarchive-tools
                qt5-default qtdeclarative5-dev libqt5svg5-dev
                qttools5-dev-tools qttools5-dev
                qtmultimedia5-dev"
