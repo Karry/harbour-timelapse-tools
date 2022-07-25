@@ -29,6 +29,7 @@ BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(Qt5Svg)
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(libcurl)
+BuildRequires:  pkgconfig(libxml-2.0)
 BuildRequires:  cmake
 BuildRequires:  chrpath
 BuildRequires:  desktop-file-utils
