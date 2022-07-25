@@ -38,54 +38,21 @@
 
 static QStringList videoDirectories;
 
-QmlTimeLapseAssembly::QmlTimeLapseAssembly():
-  err(stderr), verboseOutput(stdout)
-{
-  if (!videoDirectories.empty()) {
-    _dir = videoDirectories[0];
-  }
-  // TODO: configurable, support raw images...
-  fileSuffixes << "jpeg";
-  fileSuffixes << "jpg";
+AssemblyProcess::AssemblyProcess(QThread *t):
+  thread(t), err(stderr), verboseOutput(stdout)
+{}
+
+AssemblyProcess::~AssemblyProcess() {
+  assert(thread != nullptr);
+  thread->quit();
+  thread = nullptr;
 }
 
-void QmlTimeLapseAssembly::setSource(const QString &s) {
-  if (s == _source) {
-    return;
-  }
-  _source = s;
-  QDir d(_source);
-  QFileInfoList l = d.entryInfoList(QDir::Files, QDir::Name);
-  inputImgCnt=0;
-  for (QFileInfo i2 : l) {
-    if ((i2.isFile() || i2.isSymLink()) &&
-        (fileSuffixes.isEmpty() || fileSuffixes.contains(i2.completeSuffix(), Qt::CaseInsensitive))) {
-      inputImgCnt++;
-    }
-  }
-  emit inputImgCntChanged(inputImgCnt);
-  emit sourceChanged(_source);
+void AssemblyProcess::init() {
+
 }
 
-void QmlTimeLapseAssembly::onError(const QString &msg) {
-  emit error(msg);
-  cleanup();
-}
-
-void QmlTimeLapseAssembly::cleanup() {
-  if (pipeline != nullptr) {
-    pipeline->deleteLater();
-    pipeline = nullptr;
-  }
-  if (_tempDir != nullptr) {
-    delete _tempDir;
-    _tempDir = nullptr;
-  }
-  _processing = false;
-  emit processingChanged();
-}
-
-void QmlTimeLapseAssembly::start() {
+void AssemblyProcess::start(const AssemblyParams params) {
   using namespace timelapse;
 
   // unpack ffmpeg
@@ -105,28 +72,28 @@ void QmlTimeLapseAssembly::start() {
       }
     } catch  (const std::exception &e) {
       qWarning() << "Failed to unpack ffmpeg:" << e.what();
-      onError(tr("Failed to unpack ffmpeg: %1").arg(e.what()));
+      emit error(tr("Failed to unpack ffmpeg: %1").arg(e.what()));
       return;
     }
     QFile(ffmpegBinary).setPermissions(QFile::ExeGroup | QFile::ExeOther | QFile::ExeUser);
   }
 
   // check temp dir
-  _tempDir = new QTemporaryDir(_source + QDir::separator() + ".tmp");
-  if (!_tempDir->isValid()) {
+  tempDir = new QTemporaryDir(params.source + QDir::separator() + ".tmp");
+  if (!tempDir->isValid()) {
     emit error("Can't create temp directory");
     return;
   }
 
   qDebug() << "Tmp dir: " << QDir::tempPath();
-  _tempDir->setAutoRemove(true);
-  qDebug() << "Using temp directory " << _tempDir->path();
+  tempDir->setAutoRemove(true);
+  qDebug() << "Using temp directory " << tempDir->path();
 
   int _width=-1;
   int _height=-1;
   QString _bitrate;
   QString _codec;
-  switch (_profile) {
+  switch (params.profile) {
     case HDx264_Low:
       _width = 1920;
       _height = 1080;
@@ -157,57 +124,122 @@ void QmlTimeLapseAssembly::start() {
 
   // build processing pipeline
   QStringList inputArguments;
-  inputArguments << _source;
-  pipeline = Pipeline::createWithFileSource(inputArguments, fileSuffixes, false, &verboseOutput, &err);
+  inputArguments << params.source;
+  pipeline = Pipeline::createWithFileSource(inputArguments, params.fileSuffixes, false, &verboseOutput, &err);
 
-  if (_deflicker == Deflicker::Average || _deflicker == Deflicker::MovingAverage) {
+  if (params.deflicker == Deflicker::Average || params.deflicker == Deflicker::MovingAverage) {
     *pipeline << new ComputeLuminance(&verboseOutput);
   }
 
-  if (_length < 0) {
+  if (params.length < 0) {
     *pipeline << new OneToOneFrameMapping();
-  } else if (_noStrictInterval) {
+  } else if (params.noStrictInterval) {
     *pipeline << new ImageMetadataReader(&verboseOutput, &err);
-    *pipeline << new VariableIntervalFrameMapping(&verboseOutput, &err, _length, _fps);
+    *pipeline << new VariableIntervalFrameMapping(&verboseOutput, &err, params.length, params.fps);
   } else {
-    *pipeline << new ConstIntervalFrameMapping(&verboseOutput, &err, _length, _fps);
+    *pipeline << new ConstIntervalFrameMapping(&verboseOutput, &err, params.length, params.fps);
   }
 
-  if (_deflicker == Deflicker::Average || _deflicker == Deflicker::MovingAverage) {
-    if (_deflicker == Deflicker::MovingAverage) {
-      *pipeline << new WMALuminance(&verboseOutput, wmaCount);
+  if (params.deflicker == Deflicker::Average || params.deflicker == Deflicker::MovingAverage) {
+    if (params.deflicker == Deflicker::MovingAverage) {
+      *pipeline << new WMALuminance(&verboseOutput, params.wmaCount);
     } else {
       *pipeline << new ComputeAverageLuminance(&verboseOutput);
     }
-    *pipeline << new AdjustLuminance(&verboseOutput, deflickerDebugView);
+    *pipeline << new AdjustLuminance(&verboseOutput, params.deflickerDebugView);
   }
 
-  if (_blendFrames) {
-    if (_blendBeforeResize) {
+  if (params.blendFrames) {
+    if (params.blendBeforeResize) {
       *pipeline << new BlendFramePrepare(&verboseOutput);
-      *pipeline << new ResizeFrame(&verboseOutput, _width, _height, _adaptiveResize);
+      *pipeline << new ResizeFrame(&verboseOutput, _width, _height, params.adaptiveResize);
     } else {
-      *pipeline << new ResizeFrame(&verboseOutput, _width, _height, _adaptiveResize);
+      *pipeline << new ResizeFrame(&verboseOutput, _width, _height, params.adaptiveResize);
       *pipeline << new BlendFramePrepare(&verboseOutput);
     }
   } else {
-    *pipeline << new ResizeFrame(&verboseOutput, _width, _height, _adaptiveResize);
+    *pipeline << new ResizeFrame(&verboseOutput, _width, _height, params.adaptiveResize);
     *pipeline << new FramePrepare(&verboseOutput);
   }
-  *pipeline << new WriteFrame(QDir(_tempDir->path()), &verboseOutput, false);
+  *pipeline << new WriteFrame(QDir(tempDir->path()), &verboseOutput, false);
 
-  *pipeline << new VideoAssembly(QDir(_tempDir->path()), &verboseOutput, &err, false,
-                                 QFileInfo(_dir + QDir::separator() + _name + ".mp4"),
-                                 _width, _height, _fps, _bitrate, _codec,
+  *pipeline << new VideoAssembly(QDir(tempDir->path()), &verboseOutput, &err, false,
+                                 QFileInfo(params.dir + QDir::separator() + params.name + ".mp4"),
+                                 _width, _height, params.fps, _bitrate, _codec,
                                  ffmpegBinary);
 
-  connect(pipeline, &Pipeline::done, this, &QmlTimeLapseAssembly::cleanup);
-  connect(pipeline, &Pipeline::error, this, &QmlTimeLapseAssembly::onError);
-
-  // startup pipeline
-  _processing = true;
-  emit processingChanged();
+  connect(pipeline, &Pipeline::done, this, &AssemblyProcess::done);
+  connect(pipeline, &Pipeline::error, this, &AssemblyProcess::error);
   emit pipeline->process();
+}
+
+QmlTimeLapseAssembly::QmlTimeLapseAssembly()
+{
+  if (!videoDirectories.empty()) {
+    params.dir = videoDirectories[0];
+  }
+  // TODO: configurable, support raw images...
+  params.fileSuffixes << "jpeg";
+  params.fileSuffixes << "jpg";
+}
+
+void QmlTimeLapseAssembly::setSource(const QString &s) {
+  if (s == params.source) {
+    return;
+  }
+  params.source = s;
+  QDir d(params.source);
+  QFileInfoList l = d.entryInfoList(QDir::Files, QDir::Name);
+  inputImgCnt=0;
+  for (QFileInfo i2 : l) {
+    if ((i2.isFile() || i2.isSymLink()) &&
+        (params.fileSuffixes.isEmpty() || params.fileSuffixes.contains(i2.completeSuffix(), Qt::CaseInsensitive))) {
+      inputImgCnt++;
+    }
+  }
+  emit inputImgCntChanged(inputImgCnt);
+  emit sourceChanged(params.source);
+}
+
+void QmlTimeLapseAssembly::onError(const QString &msg) {
+  emit error(msg);
+  cleanup();
+}
+
+void QmlTimeLapseAssembly::cleanup() {
+  if (process!=nullptr) {
+    process->deleteLater();
+    process = nullptr;
+  }
+  emit processingChanged();
+}
+
+void QmlTimeLapseAssembly::start() {
+  QThread *thread=new QThread();
+  thread->setObjectName("time-lapse-assembly");
+  // TODO: join the thread before application termination
+  QObject::connect(thread, &QThread::finished,
+                   thread, &QThread::deleteLater);
+  process = new AssemblyProcess(thread);
+  process->moveToThread(thread);
+  connect(thread, &QThread::started,
+          process, &AssemblyProcess::init);
+  thread->start();
+
+  connect(this, &QmlTimeLapseAssembly::startRequest,
+          process, &AssemblyProcess::start,
+          Qt::QueuedConnection);
+
+  connect(process, &AssemblyProcess::done,
+          this, &QmlTimeLapseAssembly::cleanup,
+          Qt::QueuedConnection);
+
+  connect(process, &AssemblyProcess::error,
+          this, &QmlTimeLapseAssembly::onError,
+          Qt::QueuedConnection);
+
+  emit startRequest(params);
+  emit processingChanged();
 }
 
 QStringList QmlTimeLapseAssembly::getVideoDirectories() const {

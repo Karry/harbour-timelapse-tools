@@ -61,6 +61,13 @@
     </message>
 </context>
 <context>
+    <name>AssemblyProcess</name>
+    <message>
+        <source>Failed to unpack ffmpeg: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Capture</name>
     <message>
         <source>Capturing details</source>
@@ -179,13 +186,6 @@ video duration: %2 @ 30 fps</source>
     </message>
     <message>
         <source>Focus point mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QmlTimeLapseAssembly</name>
-    <message>
-        <source>Failed to unpack ffmpeg: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

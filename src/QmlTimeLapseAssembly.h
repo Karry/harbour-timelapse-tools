@@ -28,28 +28,81 @@
 #include <QObject>
 #include <QStringList>
 #include <QTextStream>
+#include <QThread>
 
 #include <cstdio>
+
+enum Deflicker {
+  NoDeflicker = 0,
+  Average = 1,
+  MovingAverage = 2
+};
+
+enum Profile {
+  HDx264_Low = 0,
+  HDx264_High = 1,
+  HDx265 = 2,
+  UHDx265 = 3
+};
+
+struct AssemblyParams {
+  QString source;
+  QStringList fileSuffixes;
+  QString dir;
+  QString name;
+  Deflicker deflicker = Deflicker::NoDeflicker;
+  int wmaCount = 10;
+  bool deflickerDebugView = false;
+  Profile profile = Profile::HDx264_High;
+  qreal fps=25.0;
+
+  /** length of output video in seconds.
+   * if length < 0, then length will be count of inputs images / fps
+   */
+  qreal length=-1;
+
+  /* It is useful when time interval between images is not fixed.
+   * Input image to output video frame mapping will be computed from image
+   * timestamp (EXIF metadata will be used).
+   */
+  bool noStrictInterval=false;
+  bool blendFrames=false;
+  bool blendBeforeResize=false;
+  bool adaptiveResize=true;
+};
+
+class AssemblyProcess : public QObject {
+  Q_OBJECT
+
+signals:
+  void error(QString msg);
+  void done();
+
+public slots:
+  void init();
+  void start(const AssemblyParams params);
+
+public:
+  explicit AssemblyProcess(QThread *thread);
+  ~AssemblyProcess() override;
+
+private:
+  QThread *thread;
+
+  QTextStream err;
+  QTextStream verboseOutput;
+
+  timelapse::Pipeline *pipeline=nullptr;
+  QTemporaryDir *tempDir=nullptr;
+
+};
 
 class QmlTimeLapseAssembly: public QObject {
   Q_OBJECT
 
 public:
-  enum Deflicker {
-    NoDeflicker = 0,
-    Average = 1,
-    MovingAverage = 2
-  };
   Q_ENUM(Deflicker)
-
-  enum Profile {
-    HDx264_Low = 0,
-    HDx264_High = 1,
-    HDx265 = 2,
-    UHDx265 = 3
-  };
   Q_ENUM(Profile)
-
 
   Q_PROPERTY(QStringList videoDirectories READ getVideoDirectories)
 
@@ -72,6 +125,8 @@ public slots:
   void onError(const QString &msg);
 
 signals:
+  void startRequest(const AssemblyParams &params);
+
   void error(QString message);
   void progress(QString message);
   void finish();
@@ -98,26 +153,26 @@ public:
   QmlTimeLapseAssembly& operator=(QmlTimeLapseAssembly&&) = delete;
 
   QString getSource() const {
-    return _source;
+    return params.source;
   }
   void setSource(const QString &s);
 
   QString getDir() const {
-    return _dir;
+    return params.dir;
   }
   void setDir(const QString &s) {
-    if (s != _dir) {
-      _dir = s;
-      emit dirChanged(_dir);
+    if (s != params.dir) {
+      params.dir = s;
+      emit dirChanged(params.dir);
     }
   }
   QString getName() const {
-    return _name;
+    return params.name;
   }
   void setName(const QString &n) {
-    if (n != _name) {
-      _name = n;
-      emit nameChanged(_name);
+    if (n != params.name) {
+      params.name = n;
+      emit nameChanged(params.name);
     }
   }
 
@@ -126,71 +181,71 @@ public:
   }
 
   Deflicker getDeflicker() const {
-    return _deflicker;
+    return params.deflicker;
   }
   void setDeflicker(Deflicker deflicker) {
-    if (_deflicker != deflicker) {
-      _deflicker = deflicker;
-      emit deflickerChanged(_deflicker);
+    if (params.deflicker != deflicker) {
+      params.deflicker = deflicker;
+      emit deflickerChanged(params.deflicker);
     }
   }
   int getDeflickerWmaCount() const {
-    return wmaCount;
+    return params.wmaCount;
   }
   void setDeflickerWmaCount(int c) {
-    if (c != wmaCount) {
-      wmaCount = c;
-      emit deflickerWmaCountChanged(wmaCount);
+    if (c != params.wmaCount) {
+      params.wmaCount = c;
+      emit deflickerWmaCountChanged(params.wmaCount);
     }
   }
   Profile getProfile() const {
-    return _profile;
+    return params.profile;
   }
   void setProfile(Profile profile) {
-    if (_profile != profile) {
-      _profile = profile;
-      emit profileChanged(_profile);
+    if (params.profile != profile) {
+      params.profile = profile;
+      emit profileChanged(params.profile);
     }
   }
   qreal getFps() const {
-    return _fps;
+    return params.fps;
   }
   void setFps(qreal fps) {
-    if (fps != _fps) {
-      _fps = fps;
-      emit fpsChanged(_fps);
+    if (fps != params.fps) {
+      params.fps = fps;
+      emit fpsChanged(params.fps);
     }
   }
   qreal getLength() const {
-    return _length;
+    return params.length;
   }
   void setLength(qreal length) {
-    if (length != _length) {
-      _length = length;
-      emit lengthChanged(_length);
+    if (length != params.length) {
+      params.length = length;
+      emit lengthChanged(params.length);
     }
   }
   bool getNoStrictInterval() const {
-    return _noStrictInterval;
+    return params.noStrictInterval;
   }
   void setNoStrictInterval(bool noStrictInterval) {
-    if (_noStrictInterval != noStrictInterval) {
-      _noStrictInterval = noStrictInterval;
-      emit noStrictIntervalChanged(_noStrictInterval);
+    if (params.noStrictInterval != noStrictInterval) {
+      params.noStrictInterval = noStrictInterval;
+      emit noStrictIntervalChanged(params.noStrictInterval);
     }
   }
   bool getBlendFrames() const {
-    return _blendFrames;
+    return params.blendFrames;
   }
   void setBlendFrames(bool blendFrames) {
-    if (_blendFrames != blendFrames) {
-      _blendFrames = blendFrames;
-      emit blendFramesChanged(_blendFrames);
+    if (params.blendFrames != blendFrames) {
+      params.blendFrames = blendFrames;
+      emit blendFramesChanged(params.blendFrames);
     }
   }
 
   bool getProcessing() const {
-    return _processing;
+    return process!=nullptr;
   }
 
   QStringList getVideoDirectories() const;
@@ -198,36 +253,8 @@ public:
   static void setVideoDirectories(const QStringList &l);
 
 private:
-  QString _source;
-  QStringList fileSuffixes;
-  QString _dir;
-  QString _name;
-  Deflicker _deflicker = Deflicker::NoDeflicker;
-  int wmaCount = 10;
-  bool deflickerDebugView = false;
-  Profile _profile = Profile::HDx264_High;
-  qreal _fps=25.0;
-
-  /** length of output video in seconds.
-   * if length < 0, then length will be count of inputs images / fps
-   */
-  qreal _length=-1;
-
-  /* It is useful when time interval between images is not fixed.
-   * Input image to output video frame mapping will be computed from image
-   * timestamp (EXIF metadata will be used).
-   */
-  bool _noStrictInterval=false;
-  bool _blendFrames=false;
-  bool _blendBeforeResize=false;
-  bool _adaptiveResize=true;
-
-  QTextStream err;
-  QTextStream verboseOutput;
+  AssemblyParams params;
+  AssemblyProcess *process=nullptr;
 
   int inputImgCnt = 0;
-
-  bool _processing = false;
-  timelapse::Pipeline *pipeline=nullptr;
-  QTemporaryDir *_tempDir=nullptr;
 };
