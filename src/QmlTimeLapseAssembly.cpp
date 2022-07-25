@@ -43,6 +43,15 @@ AssemblyProcess::AssemblyProcess(QThread *t):
 {}
 
 AssemblyProcess::~AssemblyProcess() {
+  if (pipeline != nullptr) {
+    pipeline->deleteLater();
+    pipeline = nullptr;
+  }
+  if (tempDir != nullptr) {
+    delete tempDir;
+    tempDir = nullptr;
+  }
+
   assert(thread != nullptr);
   thread->quit();
   thread = nullptr;
@@ -182,6 +191,12 @@ QmlTimeLapseAssembly::QmlTimeLapseAssembly()
   // TODO: configurable, support raw images...
   params.fileSuffixes << "jpeg";
   params.fileSuffixes << "jpg";
+}
+
+QmlTimeLapseAssembly::~QmlTimeLapseAssembly() {
+  if (process!=nullptr) {
+    onError(tr("Interrupted"));
+  }
 }
 
 void QmlTimeLapseAssembly::setSource(const QString &s) {

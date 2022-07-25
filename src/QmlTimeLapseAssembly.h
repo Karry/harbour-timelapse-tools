@@ -124,7 +124,7 @@ public:
   QmlTimeLapseAssembly();
   QmlTimeLapseAssembly(const QmlTimeLapseAssembly&) = delete;
   QmlTimeLapseAssembly(QmlTimeLapseAssembly&&) = delete;
-  ~QmlTimeLapseAssembly() override = default;
+  ~QmlTimeLapseAssembly() override;
   QmlTimeLapseAssembly& operator=(const QmlTimeLapseAssembly&) = delete;
   QmlTimeLapseAssembly& operator=(QmlTimeLapseAssembly&&) = delete;
 
