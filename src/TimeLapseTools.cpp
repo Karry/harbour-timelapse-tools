@@ -129,7 +129,7 @@ Q_DECL_EXPORT int main(int argc, char* argv[]) {
   qmlRegisterType<QmlTimeLapseCapture>("harbour.timelapsetools", 1, 0, "TimeLapseCapture");
   qmlRegisterType<TimeLapseModel>("harbour.timelapsetools", 1, 0, "TimeLapseModel");
 
-  qRegisterMetaType<AssemblyParams>("AssemblyParams");
+  qRegisterMetaType<QmlTimeLapseAssembly::AssemblyParams>("AssemblyParams");
 
   {
     QStringList videoDirectories;

@@ -32,77 +32,53 @@
 
 #include <cstdio>
 
-enum Deflicker {
-  NoDeflicker = 0,
-  Average = 1,
-  MovingAverage = 2
-};
-
-enum Profile {
-  HDx264_Low = 0,
-  HDx264_High = 1,
-  HDx265 = 2,
-  UHDx265 = 3
-};
-
-struct AssemblyParams {
-  QString source;
-  QStringList fileSuffixes;
-  QString dir;
-  QString name;
-  Deflicker deflicker = Deflicker::NoDeflicker;
-  int wmaCount = 10;
-  bool deflickerDebugView = false;
-  Profile profile = Profile::HDx264_High;
-  qreal fps=25.0;
-
-  /** length of output video in seconds.
-   * if length < 0, then length will be count of inputs images / fps
-   */
-  qreal length=-1;
-
-  /* It is useful when time interval between images is not fixed.
-   * Input image to output video frame mapping will be computed from image
-   * timestamp (EXIF metadata will be used).
-   */
-  bool noStrictInterval=false;
-  bool blendFrames=false;
-  bool blendBeforeResize=false;
-  bool adaptiveResize=true;
-};
-
-class AssemblyProcess : public QObject {
-  Q_OBJECT
-
-signals:
-  void error(QString msg);
-  void done();
-
-public slots:
-  void init();
-  void start(const AssemblyParams params);
-
-public:
-  explicit AssemblyProcess(QThread *thread);
-  ~AssemblyProcess() override;
-
-private:
-  QThread *thread;
-
-  QTextStream err;
-  QTextStream verboseOutput;
-
-  timelapse::Pipeline *pipeline=nullptr;
-  QTemporaryDir *tempDir=nullptr;
-
-};
+class AssemblyProcess;
 
 class QmlTimeLapseAssembly: public QObject {
   Q_OBJECT
 
 public:
+  enum Deflicker {
+    NoDeflicker = 0,
+    Average = 1,
+    MovingAverage = 2
+  };
+
+  enum Profile {
+    HDx264_Low = 0,
+    HDx264_High = 1,
+    HDx265 = 2,
+    UHDx265 = 3
+  };
+
   Q_ENUM(Deflicker)
   Q_ENUM(Profile)
+
+  struct AssemblyParams {
+    QString source;
+    QStringList fileSuffixes;
+    QString dir;
+    QString name;
+    Deflicker deflicker = Deflicker::NoDeflicker;
+    int wmaCount = 10;
+    bool deflickerDebugView = false;
+    Profile profile = Profile::HDx264_High;
+    qreal fps=25.0;
+
+    /** length of output video in seconds.
+     * if length < 0, then length will be count of inputs images / fps
+     */
+    qreal length=-1;
+
+    /* It is useful when time interval between images is not fixed.
+     * Input image to output video frame mapping will be computed from image
+     * timestamp (EXIF metadata will be used).
+     */
+    bool noStrictInterval=false;
+    bool blendFrames=false;
+    bool blendBeforeResize=false;
+    bool adaptiveResize=true;
+  };
 
   Q_PROPERTY(QStringList videoDirectories READ getVideoDirectories)
 
@@ -257,4 +233,30 @@ private:
   AssemblyProcess *process=nullptr;
 
   int inputImgCnt = 0;
+};
+
+class AssemblyProcess : public QObject {
+Q_OBJECT
+
+signals:
+  void error(QString msg);
+  void done();
+
+public slots:
+  void init();
+  void start(const QmlTimeLapseAssembly::AssemblyParams params);
+
+public:
+  explicit AssemblyProcess(QThread *thread);
+  ~AssemblyProcess() override;
+
+private:
+  QThread *thread;
+
+  QTextStream err;
+  QTextStream verboseOutput;
+
+  timelapse::Pipeline *pipeline=nullptr;
+  QTemporaryDir *tempDir=nullptr;
+
 };

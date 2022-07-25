@@ -52,7 +52,7 @@ void AssemblyProcess::init() {
 
 }
 
-void AssemblyProcess::start(const AssemblyParams params) {
+void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
   using namespace timelapse;
 
   // unpack ffmpeg
@@ -94,25 +94,25 @@ void AssemblyProcess::start(const AssemblyParams params) {
   QString _bitrate;
   QString _codec;
   switch (params.profile) {
-    case HDx264_Low:
+    case QmlTimeLapseAssembly::HDx264_Low:
       _width = 1920;
       _height = 1080;
       _bitrate = "20000k";
       _codec = "libx264";
       break;
-    case HDx264_High:
+    case QmlTimeLapseAssembly::HDx264_High:
       _width = 1920;
       _height = 1080;
       _bitrate = "40000k";
       _codec = "libx264";
       break;
-    case HDx265:
+    case QmlTimeLapseAssembly::HDx265:
       _width = 1920;
       _height = 1080;
       _bitrate = "40000k";
       _codec = "libx265";
       break;
-    case UHDx265:
+    case QmlTimeLapseAssembly::UHDx265:
       _width = 3840;
       _height = 2160;
       _bitrate = "60000k";
@@ -127,7 +127,7 @@ void AssemblyProcess::start(const AssemblyParams params) {
   inputArguments << params.source;
   pipeline = Pipeline::createWithFileSource(inputArguments, params.fileSuffixes, false, &verboseOutput, &err);
 
-  if (params.deflicker == Deflicker::Average || params.deflicker == Deflicker::MovingAverage) {
+  if (params.deflicker == QmlTimeLapseAssembly::Deflicker::Average || params.deflicker == QmlTimeLapseAssembly::Deflicker::MovingAverage) {
     *pipeline << new ComputeLuminance(&verboseOutput);
   }
 
@@ -140,8 +140,9 @@ void AssemblyProcess::start(const AssemblyParams params) {
     *pipeline << new ConstIntervalFrameMapping(&verboseOutput, &err, params.length, params.fps);
   }
 
-  if (params.deflicker == Deflicker::Average || params.deflicker == Deflicker::MovingAverage) {
-    if (params.deflicker == Deflicker::MovingAverage) {
+  if (params.deflicker == QmlTimeLapseAssembly::Deflicker::Average ||
+      params.deflicker == QmlTimeLapseAssembly::Deflicker::MovingAverage) {
+    if (params.deflicker == QmlTimeLapseAssembly::Deflicker::MovingAverage) {
       *pipeline << new WMALuminance(&verboseOutput, params.wmaCount);
     } else {
       *pipeline << new ComputeAverageLuminance(&verboseOutput);
