@@ -25,14 +25,11 @@ CoverBackground {
     id: cover
     property bool isLightTheme: Theme.colorScheme == Theme.DarkOnLight
 
-    // CoverActionList {
-    //     enabled: true
-    //     iconBackground: true
-    //     CoverAction {
-    //         // installed custom image provider is not available in cover page
-    //         iconSource: isLightTheme ? "../../pics/icon-cover-remove-dark.png" : "../../pics/icon-cover-remove.png"
-    //         onTriggered: {
-    //         }
-    //     }
-    // }
+    Image{
+        id: icon
+        anchors.centerIn: parent;
+        source: "image://theme/harbour-timelapse-tools"
+        height: Theme.iconSizeLarge
+        width: height
+    }
 }
