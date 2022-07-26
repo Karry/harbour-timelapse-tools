@@ -64,6 +64,12 @@ void AssemblyProcess::init() {
 void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
   using namespace timelapse;
 
+  QFileInfo output(params.dir + QDir::separator() + params.name + ".mp4");
+  if (output.exists()) {
+    emit error(tr("Output file exists already."));
+    return;
+  }
+
   // unpack ffmpeg
   // cd .cache/cz.karry.timelapse/TimeLapseTools/
   // tar -xf /usr/share/harbour-timelapse-tools/bin/ffmpeg.tar
@@ -174,7 +180,7 @@ void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
   *pipeline << new WriteFrame(QDir(tempDir->path()), &verboseOutput, false);
 
   *pipeline << new VideoAssembly(QDir(tempDir->path()), &verboseOutput, &err, false,
-                                 QFileInfo(params.dir + QDir::separator() + params.name + ".mp4"),
+                                 output,
                                  _width, _height, params.fps, _bitrate, _codec,
                                  ffmpegBinary);
 
