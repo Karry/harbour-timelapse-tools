@@ -66,7 +66,7 @@ void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
 
   QFileInfo output(params.dir + QDir::separator() + params.name + ".mp4");
   if (output.exists()) {
-    emit error(tr("Output file exists already."));
+    emit error(tr("Output file already exists."));
     return;
   }
 

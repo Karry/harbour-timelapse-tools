@@ -66,6 +66,10 @@
         <source>Failed to unpack ffmpeg: %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Output file already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Capture</name>
