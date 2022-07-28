@@ -96,6 +96,16 @@
         <source>New TimeLapse</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Delete</source>
+        <extracomment>Context menu for downloading map</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deleting</source>
+        <extracomment>label for remorse timer when canceling the download</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>NewTimeLapsePage</name>
@@ -190,6 +200,14 @@ video duration: %2 @ 30 fps</source>
     </message>
     <message>
         <source>Focus point mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty name!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

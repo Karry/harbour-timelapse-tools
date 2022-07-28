@@ -33,6 +33,18 @@ void TimeLapseModel::onDirectoryChanged(const QString &) {
   update();
 }
 
+QDateTime birthTime(QDir dir) {
+#if QT_VERSION < QT_VERSION_CHECK(5,10,0)
+  return QFileInfo(dir.path()).created();
+#else
+  return QFileInfo(dir.path()).birthTime();
+#endif
+}
+
+bool dirComparator(const Dir &d1, const Dir &d2) {
+  return d1.birthTime > d2.birthTime;
+}
+
 void TimeLapseModel::update() {
   beginResetModel();
 
@@ -47,9 +59,11 @@ void TimeLapseModel::update() {
       QFileInfo fInfo(dirIt.filePath());
       if (fInfo.isDir()) {
         qDebug() << baseDir << "subdir:" << dirIt.filePath() << QDir(fInfo.filePath()).dirName();
-        timelapses << QDir(fInfo.filePath());
+        QDir dir(fInfo.filePath());
+        timelapses << Dir{dir, birthTime(dir)};
       }
     }
+    std::sort(timelapses.begin(), timelapses.end(), dirComparator);
   }
   qDebug() << "found" << timelapses.size() << "timelapses";
 
@@ -67,16 +81,29 @@ QVariant TimeLapseModel::data(const QModelIndex &index, int role) const {
 
   const auto &dir = timelapses[index.row()];
   switch(role){
-    case NameRole: return dir.dirName();
-    case PathRole: return dir.path();
+    case NameRole: return dir.dir.dirName();
+    case PathRole: return dir.dir.path();
+    case BirthTimeRole: return dir.birthTime;
   }
-  return QVariant();}
+  return QVariant();
+}
+
+void TimeLapseModel::deleteTimeLapse(int row) {
+  if(row < 0 || row >= (int)timelapses.size()) {
+    return;
+  }
+
+  QDir dir = timelapses[row].dir;
+  qDebug() << "Removing" << dir;
+  dir.removeRecursively();
+}
 
 QHash<int, QByteArray> TimeLapseModel::roleNames() const {
   QHash<int, QByteArray> roles=QAbstractItemModel::roleNames();
 
   roles[NameRole]="name";
   roles[PathRole]="path";
+  roles[BirthTimeRole]="birthTime";
 
   return roles;
 }

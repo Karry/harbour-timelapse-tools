@@ -75,9 +75,13 @@ Page {
 
 
         VerticalScrollDecorator {}
+        TimeLapseModel {
+            id: timeLapseModel
+        }
 
-        model: TimeLapseModel {}
+        model: timeLapseModel
         delegate:  ListItem {
+            id: timeLapseItem
             width: listView.width
             //height: timeLapseName.height
             Label {
@@ -86,12 +90,39 @@ Page {
                 text: model.name
             }
 
+            Label{
+                id: dateLabel
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.rightMargin: Theme.paddingMedium
+                text: Qt.formatDateTime(birthTime)
+                font.pixelSize: Theme.fontSizeExtraSmall
+                color: Theme.secondaryColor
+                visible: Qt.formatDateTime(birthTime) != ""
+            }
+
             onClicked: {
                 pageStack.push(Qt.resolvedUrl("Assembly.qml"),
                                {
                                    name: model.name,
                                    path: model.path
                                })
+            }
+
+            menu: ContextMenu {
+                MenuItem {
+                    //: Context menu for downloading map
+                    text: qsTr("Delete")
+                    onClicked: {
+                        Remorse.itemAction(timeLapseItem,
+                                           //: label for remorse timer when canceling the download
+                                           qsTr("Deleting"),
+                                           function() {
+                                               console.log("about delete timelapse on row " + model.index);
+                                               timeLapseModel.deleteTimeLapse(model.index);
+                                           });
+                    }
+                }
             }
         }
     }

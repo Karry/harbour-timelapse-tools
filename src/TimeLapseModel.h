@@ -23,12 +23,19 @@
 #include <QAbstractListModel>
 #include <QDir>
 #include <QFileSystemWatcher>
+#include <QDateTime>
+
+struct Dir {
+  QDir dir;
+  QDateTime birthTime;
+};
 
 class TimeLapseModel: public QAbstractListModel {
 Q_OBJECT
 
 public slots :
   void onDirectoryChanged(const QString &path);
+  void deleteTimeLapse(int row);
 
 public:
   explicit TimeLapseModel(QObject *parent=nullptr);
@@ -40,7 +47,8 @@ public:
 
   enum Roles {
     NameRole = Qt::UserRole,
-    PathRole = Qt::UserRole +1
+    PathRole = Qt::UserRole +1,
+    BirthTimeRole = Qt::UserRole +2
   };
   Q_ENUM(Roles)
 
@@ -54,5 +62,5 @@ private:
 
 private:
   QFileSystemWatcher dirWatcher;
-  QList <QDir> timelapses;
+  QList <Dir> timelapses;
 };
