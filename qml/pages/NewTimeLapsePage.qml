@@ -45,6 +45,8 @@ Page {
         autoPlay: true
     }
 
+    RemorsePopup { id: remorse }
+
     VideoOutput {
         id: viewFinder
 
@@ -258,6 +260,12 @@ Page {
                     .arg(newTimeLapsePage.camera.resolution.height)
                 visible: newTimeLapsePage.camera.resolution.width > 0 && newTimeLapsePage.camera.resolution.height > 0
                 x: Theme.horizontalPageMargin
+            }
+            TextField {
+                id: nameField
+                label: qsTr("Name")
+                text: Qt.formatDateTime(new Date())
+                validator: RegExpValidator { regExp: /[^\/*:]{1,}/ }
             }
             TextField {
                 id: intervalField
@@ -670,8 +678,14 @@ Page {
         MouseArea {
             anchors.fill: parent
             onClicked: {
+                if (nameField.text=="") {
+                    remorse.execute(qsTr("Empty name!"), function() { }, 10 * 1000);
+                    return;
+                }
+
                 pageStack.replace(Qt.resolvedUrl("Capture.qml"),
                                   {
+                                      name: nameField.text,
                                       camera: newTimeLapsePage.camera,
                                       interval: parseInt(intervalField.text, 10),
                                       baseDir: destinationDirectoryComboBox.selected,

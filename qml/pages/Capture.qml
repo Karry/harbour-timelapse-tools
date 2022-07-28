@@ -35,6 +35,7 @@ import "../custom/Utils.js" as Utils
 Page {
     id: capturePage
 
+    property string name: Qt.formatDateTime(new Date())
     property var camera: null
     property int interval: 1000
     property string baseDir: ""
@@ -47,7 +48,7 @@ Page {
         id: capture
 
         camera: capturePage.camera
-        dir: Qt.formatDateTime(new Date())
+        dir: capturePage.name
         interval: capturePage.interval
         baseDir: capturePage.baseDir
         count: capturePage.count
