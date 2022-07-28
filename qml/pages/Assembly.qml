@@ -43,15 +43,90 @@ Page {
         blendFrames: blendSwitch.checked
         onError: {
             remorse.execute(qsTranslate("message", message), function() { }, 10 * 1000);
+            processDialog.rejectRequested = true;
+            processDialog.reject();
         }
     }
 
-    BusyIndicator {
-        id: busyIndicator
-        running: assembly.processing
-        size: BusyIndicatorSize.Large
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
+    function pageStatus(status){
+        // https://sailfishos.org/develop/docs/silica/qml-sailfishsilica-sailfish-silica-page.html/
+        if (status == PageStatus.Inactive){
+            return "Inactive";
+        }
+        if (status == PageStatus.Activating){
+            return "Activating";
+        }
+        if (status == PageStatus.Active){
+            return "Active";
+        }
+        if (status == PageStatus.Deactivating){
+            return "Deactivating";
+        }
+
+        return "Unknown";
+    }
+
+    Dialog{
+        id: processDialog
+        acceptDestinationAction: PageStackAction.Pop
+        property bool rejectRequested: false;
+
+        onStatusChanged: {
+            console.log("Process dialog status: " + pageStatus(processDialog.status));
+            if (processDialog.status == PageStatus.Active && rejectRequested) {
+                processDialog.reject();
+            }
+        }
+        onAccepted: {
+            console.log("accepted");
+        }
+        onRejected: {
+            console.log("rejected");
+            assembly.cancel();
+        }
+        canAccept: !assembly.processing
+
+        DialogHeader {
+            id: processDialogHeader
+            title: qsTr("Assembling")
+            acceptText : qsTr("Done")
+            cancelText : qsTr("Cancel")
+        }
+
+        BusyIndicator {
+            id: busyIndicator
+            running: assembly.processing
+            size: BusyIndicatorSize.Large
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: processDialogHeader.bottom
+        }
+
+        Column {
+            id: details
+            anchors.top: busyIndicator.bottom
+            width: parent.width - 2*Theme.paddingMedium
+
+            DetailItem {
+                label: qsTr("Source")
+                value: assembly.source
+            }
+            DetailItem {
+                label: qsTr("Output dir")
+                value: assembly.dir
+            }
+            DetailItem {
+                label: qsTr("Video name")
+                value: assembly.name
+            }
+            DetailItem {
+                label: qsTr("Input images")
+                value: assembly.inputImageCount
+            }
+            DetailItem {
+                label: qsTr("Progress")
+                value: assembly.progressMessage
+            }
+        }
     }
 
     SilicaFlickable {
@@ -297,6 +372,8 @@ Page {
                 onClicked: {
                     if (!assembly.processing) {
                         assembly.start()
+                        processDialog.rejectRequested = false;
+                        processDialog.open();
                     }
                 }
             }

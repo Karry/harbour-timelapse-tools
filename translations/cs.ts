@@ -59,6 +59,38 @@
         <source>Assembly</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Assembling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output dir</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Video name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Progress</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AssemblyProcess</name>
@@ -68,6 +100,18 @@
     </message>
     <message>
         <source>Output file already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unpacking ffmpeg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assembling video with ffmpeg.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stage %1, processing image %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

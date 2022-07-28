@@ -95,10 +95,14 @@ public:
   Q_PROPERTY(bool blendFrames READ getBlendFrames WRITE setBlendFrames NOTIFY blendFramesChanged)
   Q_PROPERTY(bool processing READ getProcessing NOTIFY processingChanged)
 
+  Q_PROPERTY(QString progressMessage READ getProgressMessage NOTIFY progressMessageChanged)
+
 public slots:
   void start();
+  void cancel();
   void cleanup();
   void onError(const QString &msg);
+  void onProgress(QString msg);
 
 signals:
   void startRequest(const AssemblyParams &params);
@@ -119,6 +123,8 @@ signals:
   void lengthChanged(qreal);
   void noStrictIntervalChanged(bool);
   void blendFramesChanged(bool);
+
+  void progressMessageChanged(QString msg);
 
 public:
   QmlTimeLapseAssembly();
@@ -224,6 +230,10 @@ public:
     return process!=nullptr;
   }
 
+  QString getProgressMessage() const {
+    return _progressMessage;
+  }
+
   QStringList getVideoDirectories() const;
 
   static void setVideoDirectories(const QStringList &l);
@@ -233,18 +243,33 @@ private:
   AssemblyProcess *process=nullptr;
 
   int inputImgCnt = 0;
+  QString _progressMessage;
+};
+
+class PipelineResources : public QObject {
+  Q_OBJECT
+public:
+  explicit PipelineResources(const QString &templateName);
+public:
+  QTemporaryDir dir;
+  QTextStream err;
+  QTextStream verboseOutput;
 };
 
 class AssemblyProcess : public QObject {
-Q_OBJECT
+  Q_OBJECT
 
 signals:
   void error(QString msg);
   void done();
+  void progress(QString msg);
 
 public slots:
   void init();
   void start(const QmlTimeLapseAssembly::AssemblyParams params);
+
+  void onFFmpegStarted();
+  void onImageLoaded(int stage, int cnt);
 
 public:
   explicit AssemblyProcess(QThread *thread);
@@ -253,10 +278,6 @@ public:
 private:
   QThread *thread;
 
-  QTextStream err;
-  QTextStream verboseOutput;
-
   timelapse::Pipeline *pipeline=nullptr;
-  QTemporaryDir *tempDir=nullptr;
-
+  PipelineResources *resources=nullptr;
 };
