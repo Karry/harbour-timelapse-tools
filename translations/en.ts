@@ -142,12 +142,21 @@
     </message>
     <message>
         <source>Delete</source>
-        <extracomment>Context menu for downloading map</extracomment>
+        <extracomment>Context menu for timelapse list</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Deleting</source>
         <extracomment>label for remorse timer when canceling the download</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename</source>
+        <extracomment>Context menu for timelapse list</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

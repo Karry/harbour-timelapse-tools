@@ -36,6 +36,7 @@ Q_OBJECT
 public slots :
   void onDirectoryChanged(const QString &path);
   void deleteTimeLapse(int row);
+  void rename(int row, QString newName);
 
 public:
   explicit TimeLapseModel(QObject *parent=nullptr);

@@ -98,6 +98,20 @@ void TimeLapseModel::deleteTimeLapse(int row) {
   dir.removeRecursively();
 }
 
+void TimeLapseModel::rename(int row, QString newName) {
+  if(row < 0 || row >= (int)timelapses.size()) {
+    return;
+  }
+
+  QDir dir = timelapses[row].dir;
+  QDir parent = dir;
+  parent.cdUp();
+  qDebug() << "renaming" << dir.path() << "to" << (parent.path() + QDir::separator() + newName);
+  if (!dir.rename(dir.path(), parent.path() + QDir::separator() + newName)) {
+    qWarning() << "Renaming fails.";
+  }
+}
+
 QHash<int, QByteArray> TimeLapseModel::roleNames() const {
   QHash<int, QByteArray> roles=QAbstractItemModel::roleNames();
 

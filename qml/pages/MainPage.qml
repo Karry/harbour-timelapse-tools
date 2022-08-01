@@ -111,7 +111,17 @@ Page {
 
             menu: ContextMenu {
                 MenuItem {
-                    //: Context menu for downloading map
+                    //: Context menu for timelapse list
+                    text: qsTr("Rename")
+                    onClicked: {
+                        renameDialog.name = model.name;
+                        renameDialog.title = qsTr("Rename");
+                        renameDialog.row = model.index;
+                        renameDialog.open();
+                    }
+                }
+                MenuItem {
+                    //: Context menu for timelapse list
                     text: qsTr("Delete")
                     onClicked: {
                         Remorse.itemAction(timeLapseItem,
@@ -122,6 +132,51 @@ Page {
                                                timeLapseModel.deleteTimeLapse(model.index);
                                            });
                     }
+                }
+            }
+        }
+    }
+
+
+    Dialog{
+        id: renameDialog
+
+        property alias name: nameTextField.text
+        property alias title: renameDialogHeader.title
+        property int row
+
+        canAccept: nameTextField.text.length > 0
+        onAccepted: {
+            timeLapseModel.rename(renameDialog.row, renameDialog.name);
+        }
+
+        DialogHeader {
+            id: renameDialogHeader
+        }
+
+        onStatusChanged: {
+            console.log("dialog status: "+ renameDialog.status);
+            if (renameDialog.status == DialogStatus.Opened) {
+                nameTextField.focus = true;
+                nameTextField.forceActiveFocus();
+                nameTextField.selectAll();
+            }
+        }
+
+        Column{
+            width: parent.width
+            anchors{
+                top: renameDialogHeader.bottom
+            }
+
+            TextField {
+                id: nameTextField
+                width: parent.width
+                label: qsTr("Name")
+                placeholderText: qsTr("Name")
+                validator: RegExpValidator { regExp: /[^\/*:]{1,}/ }
+                EnterKey.onClicked: {
+                    renameDialog.accept();
                 }
             }
         }
