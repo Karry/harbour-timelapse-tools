@@ -141,6 +141,7 @@ ExternalProject_Add(x265
     URL "${CMAKE_CURRENT_SOURCE_DIR}/x265_3.2.1.tar.gz"
     URL_HASH SHA256=fb9badcf92364fd3567f8b5aa0e5e952aeea7a39a2b864387cec31e3b58cbbcc
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
+    PATCH_COMMAND sed "s/-mcpu=native//" -i source/CMakeLists.txt
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DENABLE_PIC=ON
     SOURCE_SUBDIR "source"
     BUILD_BYPRODUCTS ${x265_LIBRARY}
@@ -233,6 +234,7 @@ ExternalProject_Add(v4lUtils
         --prefix <INSTALL_DIR>
         --disable-v4l2-compliance-libv4l
         --disable-qv4l2 --disable-qvidcap
+        --disable-v4l-utils
         --with-udevdir=<INSTALL_DIR>/udev
     BUILD_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT} install
@@ -285,7 +287,9 @@ add_dependencies(GPhoto2::GPhoto2 GPhoto2)
 # TimeLapse
 
 set(TimeLapse_LIBRARY
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libtimelapse.so)
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libtimelapse.so
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libjpeg.so.62 # workaround for v4l linker issue on armv7hl
+    )
 
 ExternalProject_Add(TimeLapse
     URL "${CMAKE_CURRENT_SOURCE_DIR}/TimeLapse"
@@ -294,6 +298,7 @@ ExternalProject_Add(TimeLapse
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
         -DCMAKE_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/installroot
+        -DCMAKE_EXE_LINKER_FLAGS=<INSTALL_DIR>/lib/libjpeg.so.62 # workaround for v4l linker issue on armv7hl
     BUILD_BYPRODUCTS ${TimeLapse_LIBRARY}
     DEPENDS GPhoto2 v4lUtils vidstab ImageMagick
     )
