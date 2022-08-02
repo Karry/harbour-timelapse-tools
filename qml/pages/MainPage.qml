@@ -19,7 +19,6 @@
 
 import QtQuick 2.5
 import Sailfish.Silica 1.0
-import Sailfish.Share 1.0
 import Nemo.KeepAlive 1.2
 import Nemo.Notifications 1.0
 import Nemo.DBus 2.0
