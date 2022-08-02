@@ -78,10 +78,17 @@ void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
   // tar -xf /usr/share/harbour-timelapse-tools/bin/ffmpeg.tar
   QString cacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
   QString ffmpegBinary = cacheDir + QDir::separator() + "ffmpeg";
-  if (!QFileInfo(ffmpegBinary).exists()) {
+  QString ffmpegArchive = "/usr/share/harbour-timelapse-tools/bin/ffmpeg.tar";
+  if (QFileInfo ffmpegInfo = QFileInfo(ffmpegBinary);
+      !ffmpegInfo.exists() || ffmpegInfo.created() < QFileInfo(ffmpegArchive).created()) {
     try {
       emit progress(tr("Unpacking ffmpeg"));
-      tar::tar_reader tar("/usr/share/harbour-timelapse-tools/bin/ffmpeg.tar");
+      if (ffmpegInfo.exists()) {
+        if (!QFile(ffmpegBinary).remove()) {
+          qWarning() << "Failed to remove " << ffmpegBinary;
+        }
+      }
+      tar::tar_reader tar(ffmpegArchive.toStdString());
       std::istream &is = tar.get("ffmpeg");
       std::ofstream os(ffmpegBinary.toStdString().c_str(), std::ios_base::out | std::ios_base::binary);
       std::copy(istreambuf_iterator<char>(is), istreambuf_iterator<char>(), ostreambuf_iterator<char>(os));
