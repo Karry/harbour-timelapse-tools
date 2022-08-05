@@ -10,5 +10,5 @@
  -- preprocess captured series (with ImageMagick library)
   --- "deflickering" by luminance average of all images or moving average
   --- blend frames (when video frame count is bigger than picture count)
- -- and assembly video from captured series (using ffmpeg)
+ -- assembly video from captured series (using ffmpeg)
   --- support x264 or x265 video encoders
