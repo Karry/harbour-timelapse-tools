@@ -41,3 +41,7 @@ rpmbuilddir-*
 # rpms
 RPMS
 *.list
+
+*.log
+releases
+CMakeLists.txt.user
