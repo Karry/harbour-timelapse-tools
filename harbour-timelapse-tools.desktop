@@ -12,6 +12,7 @@ Name=TimeLapse Tools
 BackupPathList=.local/share/cz.karry.timelapse/TimeLapseTools/:.config/cz.karry.timelapse/TimeLapseTools/
 
 [X-Sailjail]
-Permissions=Audio;Camera;RemovableMedia;Pictures;Videos
+# Internet permissions are necessary for netlink socket to usb device :-)
+Permissions=Internet;Audio;Camera;RemovableMedia;Pictures;Videos
 OrganizationName=cz.karry.timelapse
 ApplicationName=TimeLapseTools
