@@ -99,19 +99,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Output file already exists.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Unpacking ffmpeg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Assembling video with ffmpeg.</source>
+        <source>Stage %1, processing image %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Stage %1, processing image %2</source>
+        <source>Output file already exists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assembling video with ffmpeg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Done</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
