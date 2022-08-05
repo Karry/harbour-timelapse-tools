@@ -69,7 +69,7 @@ void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
 
   QFileInfo output(params.dir + QDir::separator() + params.name + ".mp4");
   if (output.exists()) {
-    emit error(tr("Output file already exists."));
+    emit error(tr("Output file already exists"));
     return;
   }
 
@@ -197,6 +197,7 @@ void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
   connect(assembly, &VideoAssembly::started, this, &AssemblyProcess::onFFmpegStarted);
   *pipeline << assembly;
 
+  connect(pipeline, &Pipeline::done, this, &AssemblyProcess::onDone);
   connect(pipeline, &Pipeline::done, this, &AssemblyProcess::done);
   connect(pipeline, &Pipeline::error, this, &AssemblyProcess::error);
   connect(pipeline, &Pipeline::imageLoaded, this, &AssemblyProcess::onImageLoaded);
@@ -204,7 +205,11 @@ void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
 }
 
 void AssemblyProcess::onFFmpegStarted() {
-  emit progress(tr("Assembling video with ffmpeg."));
+  emit progress(tr("Assembling video with ffmpeg"));
+}
+
+void AssemblyProcess::onDone() {
+  emit progress(tr("Done"));
 }
 
 void AssemblyProcess::onImageLoaded(int stage, int cnt) {

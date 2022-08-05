@@ -269,6 +269,7 @@ public slots:
   void start(const QmlTimeLapseAssembly::AssemblyParams params);
 
   void onFFmpegStarted();
+  void onDone();
   void onImageLoaded(int stage, int cnt);
 
 public:
