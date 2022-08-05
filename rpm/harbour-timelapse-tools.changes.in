@@ -1,5 +1,14 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
-* 2022-xx-xx Lukáš Karas <lukas.karas@centrum.cz> 0.1-1
-- initial time lapse tools port to Sailfish OS
+* 2022-08-05 Lukáš Karas <lukas.karas@centrum.cz> 0.1-1
+- initial release of time-lapse tools for Sailfish OS
+- basic features:
+ -- capture photos by phone camera (Qt camera api) or external camera (Gphoto2 library)
+  --- external camera needs to support PTP over USB and connected via USB OTG adapter
+  --- list of supported cameras: http://www.gphoto.org/proj/libgphoto2/support.php
+ -- preprocess captured series (with ImageMagick library)
+  --- "deflickering" by luminance average of all images or moving average
+  --- blend frames (when video frame count is bigger than picture count)
+ -- and assembly video from captured series (using ffmpeg)
+  --- support x264 or x265 video encoders
