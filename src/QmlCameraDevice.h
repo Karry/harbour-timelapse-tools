@@ -24,6 +24,8 @@
 #include <QObject>
 #include <QtMultimedia/QAbstractVideoSurface>
 
+#include <optional>
+
 /**
  * QML Abstraction for TimeLapse camera device.
  * To support v4l and gPhoto2 cameras, we cannot use Qt Camera api easily.
@@ -121,4 +123,5 @@ public:
 
 private:
   QSharedPointer<timelapse::CaptureDevice> dev;
+  std::optional<QStringList> shutterSpeedOptions;
 };

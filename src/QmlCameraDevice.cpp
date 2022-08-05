@@ -42,6 +42,9 @@ void QmlCameraDevice::stop() {
 }
 
 QStringList QmlCameraDevice::getShutterSpeedOptions() {
+  if (shutterSpeedOptions) {
+    return *shutterSpeedOptions;
+  }
   QStringList result;
   bool bulb=false;
   int64_t maxTime=0;
@@ -60,6 +63,7 @@ QStringList QmlCameraDevice::getShutterSpeedOptions() {
       result << QString("Bulb:%1").arg(bulbTime);
     }
   }
+  shutterSpeedOptions = result;
   return result;
 }
 
