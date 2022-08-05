@@ -45,11 +45,13 @@
 #include <QtQuick>
 #endif
 
-#include <sstream>
 #include <QStorageInfo>
+#include <QTranslator>
 
 #include <magick/magick.h>
 #include <magick/image.h>
+
+#include <sstream>
 
 #ifndef TIMELAPSE_TOOLS_VERSION_STRING
 static_assert(false, "TIMELAPSE_TOOLS_VERSION_STRING should be defined by build system");
@@ -120,6 +122,17 @@ Q_DECL_EXPORT int main(int argc, char* argv[]) {
     std::locale::global(std::locale(""));
   } catch (const std::runtime_error& e) {
     std::cerr << "Cannot set locale: \"" << e.what() << "\"" << std::endl;
+  }
+
+  // install translator
+  QTranslator translator;
+  QLocale locale;
+  if (translator.load(locale.name(), SailfishApp::pathTo("translations").toLocalFile())) {
+    qDebug() << "Install translator for locale " << locale << "/" << locale.name();
+    app->installTranslator(&translator);
+  }else{
+    qWarning() << "Can't load translator for locale" << locale << "/" << locale.name() <<
+               "(" << SailfishApp::pathTo("translations").toLocalFile() << ")";
   }
 
   timelapse::registerQtMetaTypes();
