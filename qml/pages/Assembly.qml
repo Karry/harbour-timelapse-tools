@@ -112,7 +112,7 @@ Page {
             }
             DetailItem {
                 label: qsTr("Output dir")
-                value: assembly.dir
+                value: Utils.humanDirectory(assembly.dir)
             }
             DetailItem {
                 label: qsTr("Video name")
