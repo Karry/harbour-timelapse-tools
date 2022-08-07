@@ -285,7 +285,7 @@ Page {
                 }
                 onTextChanged: {
                     if (initialized) {
-                        assembly.length = parseInt(fpsField.text, 10)
+                        assembly.length = parseInt(lengthField.text, 10)
                     }
                 }
             }
