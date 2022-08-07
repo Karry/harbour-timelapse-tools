@@ -157,6 +157,8 @@ void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
     *pipeline << new ComputeLuminance(&resources->verboseOutput);
   }
 
+  qDebug() << "explicit video length:" << params.length;
+
   if (params.length < 0) {
     *pipeline << new OneToOneFrameMapping();
   } else if (params.noStrictInterval) {
@@ -178,15 +180,15 @@ void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
 
   if (params.blendFrames) {
     if (params.blendBeforeResize) {
-      *pipeline << new BlendFramePrepare(&resources->verboseOutput);
+      *pipeline << new BlendFramePrepare(&resources->verboseOutput, params.frameCount());
       *pipeline << new ResizeFrame(&resources->verboseOutput, _width, _height, params.adaptiveResize);
     } else {
       *pipeline << new ResizeFrame(&resources->verboseOutput, _width, _height, params.adaptiveResize);
-      *pipeline << new BlendFramePrepare(&resources->verboseOutput);
+      *pipeline << new BlendFramePrepare(&resources->verboseOutput, params.frameCount());
     }
   } else {
     *pipeline << new ResizeFrame(&resources->verboseOutput, _width, _height, params.adaptiveResize);
-    *pipeline << new FramePrepare(&resources->verboseOutput);
+    *pipeline << new FramePrepare(&resources->verboseOutput, params.frameCount());
   }
   *pipeline << new WriteFrame(QDir(resources->dir.path()), &resources->verboseOutput, false);
 

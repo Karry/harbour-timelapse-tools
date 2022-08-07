@@ -78,6 +78,10 @@ public:
     bool blendFrames=false;
     bool blendBeforeResize=false;
     bool adaptiveResize=true;
+
+    int frameCount() const {
+      return length * fps;
+    }
   };
 
   Q_PROPERTY(QStringList videoDirectories READ getVideoDirectories)
