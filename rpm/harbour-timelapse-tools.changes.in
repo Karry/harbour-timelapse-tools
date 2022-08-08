@@ -13,3 +13,7 @@
   --- blend frames (when video frame count is bigger than picture count)
  -- assembly video from captured series (using ffmpeg)
   --- support x264 or x265 video encoders
+
+* 2022-xx-xx Lukáš Karas <lukas.karas@centrum.cz> 0.2-1
+- fix video length when it is defined explicitly
+- add Czech translation
