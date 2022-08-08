@@ -17,3 +17,4 @@
 * 2022-xx-xx Lukáš Karas <lukas.karas@centrum.cz> 0.2-1
 - fix video length when it is defined explicitly
 - add Czech translation
+- use yuv420p pixel format with x264 codec for better interoperability (yuvj422p cannot be played on Xperia 10.II)

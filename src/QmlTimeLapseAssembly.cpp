@@ -115,34 +115,37 @@ void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
   resources->dir.setAutoRemove(true);
   qDebug() << "Using temp directory " << resources->dir.path();
 
-  int _width=-1;
-  int _height=-1;
-  QString _bitrate;
-  QString _codec;
+  int width=-1;
+  int height=-1;
+  QString bitrate;
+  QString codec;
+  QString pixelFormat;
   switch (params.profile) {
     case QmlTimeLapseAssembly::HDx264_Low:
-      _width = 1920;
-      _height = 1080;
-      _bitrate = "20000k";
-      _codec = "libx264";
+      width = 1920;
+      height = 1080;
+      bitrate = "20000k";
+      codec = "libx264";
+      pixelFormat = "yuv420p";
       break;
     case QmlTimeLapseAssembly::HDx264_High:
-      _width = 1920;
-      _height = 1080;
-      _bitrate = "40000k";
-      _codec = "libx264";
+      width = 1920;
+      height = 1080;
+      bitrate = "40000k";
+      codec = "libx264";
+      pixelFormat = "yuv420p";
       break;
     case QmlTimeLapseAssembly::HDx265:
-      _width = 1920;
-      _height = 1080;
-      _bitrate = "40000k";
-      _codec = "libx265";
+      width = 1920;
+      height = 1080;
+      bitrate = "40000k";
+      codec = "libx265";
       break;
     case QmlTimeLapseAssembly::UHDx265:
-      _width = 3840;
-      _height = 2160;
-      _bitrate = "60000k";
-      _codec = "libx265";
+      width = 3840;
+      height = 2160;
+      bitrate = "60000k";
+      codec = "libx265";
       break;
     default:
       assert(false);
@@ -181,21 +184,21 @@ void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
   if (params.blendFrames) {
     if (params.blendBeforeResize) {
       *pipeline << new BlendFramePrepare(&resources->verboseOutput, params.frameCount());
-      *pipeline << new ResizeFrame(&resources->verboseOutput, _width, _height, params.adaptiveResize);
+      *pipeline << new ResizeFrame(&resources->verboseOutput, width, height, params.adaptiveResize);
     } else {
-      *pipeline << new ResizeFrame(&resources->verboseOutput, _width, _height, params.adaptiveResize);
+      *pipeline << new ResizeFrame(&resources->verboseOutput, width, height, params.adaptiveResize);
       *pipeline << new BlendFramePrepare(&resources->verboseOutput, params.frameCount());
     }
   } else {
-    *pipeline << new ResizeFrame(&resources->verboseOutput, _width, _height, params.adaptiveResize);
+    *pipeline << new ResizeFrame(&resources->verboseOutput, width, height, params.adaptiveResize);
     *pipeline << new FramePrepare(&resources->verboseOutput, params.frameCount());
   }
   *pipeline << new WriteFrame(QDir(resources->dir.path()), &resources->verboseOutput, false);
 
   VideoAssembly *assembly = new VideoAssembly(QDir(resources->dir.path()), &resources->verboseOutput, &resources->err, false,
                                               output,
-                                              _width, _height, params.fps, _bitrate, _codec,
-                                              ffmpegBinary);
+                                              width, height, params.fps, bitrate, codec,
+                                              ffmpegBinary, pixelFormat);
   connect(assembly, &VideoAssembly::started, this, &AssemblyProcess::onFFmpegStarted);
   *pipeline << assembly;
 
