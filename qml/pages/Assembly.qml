@@ -108,7 +108,7 @@ Page {
 
             DetailItem {
                 label: qsTr("Source")
-                value: assembly.source
+                value: Utils.humanDirectory(assembly.source)
             }
             DetailItem {
                 label: qsTr("Output dir")
