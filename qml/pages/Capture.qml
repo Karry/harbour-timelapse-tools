@@ -85,7 +85,7 @@ Page {
 
             DetailItem {
                 label: qsTr("Folder")
-                value: capture.baseDir
+                value: Utils.humanDirectory(capture.baseDir)
             }
             DetailItem {
                 label: qsTr("Name")
