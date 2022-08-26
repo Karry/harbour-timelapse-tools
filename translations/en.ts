@@ -91,6 +91,26 @@
         <source>Progress</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Stabilize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stabilize video movements by ffmpeg vid.stab.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Average all images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Moving average</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AssemblyProcess</name>

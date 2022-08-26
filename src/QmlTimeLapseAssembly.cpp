@@ -25,6 +25,7 @@
 #include <TimeLapse/pipeline_resize_frame.h>
 #include <TimeLapse/pipeline_video_assembly.h>
 #include <TimeLapse/pipeline_write_frame.h>
+#include <TimeLapse/pipeline_stab.h>
 
 #include <QProcess>
 #include <QTextStream>
@@ -49,6 +50,9 @@ AssemblyProcess::~AssemblyProcess() {
   }
   if (resources != nullptr) {
     resources->deleteLater(); // needs to be deleted after pipeline
+  }
+  if (stabConf!=nullptr) {
+    stabConf->deleteLater();
   }
 
   assert(thread != nullptr);
@@ -171,6 +175,15 @@ void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
     *pipeline << new ConstIntervalFrameMapping(&resources->verboseOutput, &resources->err, params.length, params.fps);
   }
 
+  if (params.stabilize) {
+    if (stabConf != nullptr) {
+      delete stabConf;
+    }
+    stabConf = new StabConfig();
+    *pipeline << new PipelineStabDetect(stabConf, &resources->verboseOutput, &resources->err);
+    *pipeline << new StageSeparator();
+  }
+
   if (params.deflicker == QmlTimeLapseAssembly::Deflicker::Average ||
       params.deflicker == QmlTimeLapseAssembly::Deflicker::MovingAverage) {
     if (params.deflicker == QmlTimeLapseAssembly::Deflicker::MovingAverage) {
@@ -179,6 +192,10 @@ void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
       *pipeline << new ComputeAverageLuminance(&resources->verboseOutput);
     }
     *pipeline << new AdjustLuminance(&resources->verboseOutput, params.deflickerDebugView);
+  }
+
+  if (params.stabilize) {
+    *pipeline << new PipelineStabTransform(stabConf, &resources->verboseOutput, &resources->err);
   }
 
   if (params.blendFrames) {

@@ -41,6 +41,7 @@ Page {
         profile: profileComboBox.selected
         noStrictInterval: noStrictIntervalSwitch.checked
         blendFrames: blendSwitch.checked
+        stabilize: stabilizeSwitch.checked
         onError: {
             remorse.execute(qsTranslate("message", message), function() { }, 10 * 1000);
             processDialog.rejectRequested = true;
@@ -362,6 +363,14 @@ Page {
                         assembly.deflickerWmaCount = parseInt(fpsField.text, 10)
                     }
                 }
+            }
+            TextSwitch{
+                id: stabilizeSwitch
+                width: parent.width
+
+                text: qsTr("Stabilize")
+                description: qsTr("Stabilize video movements by ffmpeg vid.stab.")
+                checked: false
             }
             Button {
                 id: startButton

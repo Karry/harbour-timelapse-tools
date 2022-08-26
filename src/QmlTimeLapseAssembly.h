@@ -22,6 +22,7 @@
 #include <TimeLapse/pipeline_cpt.h>
 #include <TimeLapse/capture.h>
 #include <TimeLapse/pipeline.h>
+#include <TimeLapse/pipeline_stab.h>
 
 #include <QmlCameraDevice.h>
 
@@ -76,6 +77,7 @@ public:
      */
     bool noStrictInterval=false;
     bool blendFrames=false;
+    bool stabilize=false;
     bool blendBeforeResize=false;
     bool adaptiveResize=true;
 
@@ -97,6 +99,7 @@ public:
   Q_PROPERTY(qreal length READ getLength WRITE setLength NOTIFY lengthChanged)
   Q_PROPERTY(bool noStrictInterval READ getNoStrictInterval WRITE setNoStrictInterval NOTIFY noStrictIntervalChanged)
   Q_PROPERTY(bool blendFrames READ getBlendFrames WRITE setBlendFrames NOTIFY blendFramesChanged)
+  Q_PROPERTY(bool stabilize READ getStabilize WRITE setStabilize NOTIFY stabilizeChanged)
   Q_PROPERTY(bool processing READ getProcessing NOTIFY processingChanged)
 
   Q_PROPERTY(QString progressMessage READ getProgressMessage NOTIFY progressMessageChanged)
@@ -127,6 +130,7 @@ signals:
   void lengthChanged(qreal);
   void noStrictIntervalChanged(bool);
   void blendFramesChanged(bool);
+  void stabilizeChanged(bool);
 
   void progressMessageChanged(QString msg);
 
@@ -229,6 +233,15 @@ public:
       emit blendFramesChanged(params.blendFrames);
     }
   }
+  bool getStabilize() const {
+    return params.stabilize;
+  }
+  void setStabilize(bool stabilize) {
+    if (params.stabilize != stabilize) {
+      params.stabilize = stabilize;
+      emit stabilizeChanged(params.stabilize);
+    }
+  }
 
   bool getProcessing() const {
     return process!=nullptr;
@@ -285,4 +298,5 @@ private:
 
   timelapse::Pipeline *pipeline=nullptr;
   PipelineResources *resources=nullptr;
+  timelapse::StabConfig *stabConf=nullptr;
 };
