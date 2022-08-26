@@ -336,9 +336,9 @@ Page {
                     console.log("changed, currentIndex=" + deflickerComboBox.currentIndex + " selected: " + selected);
                 }
                 Component.onCompleted: {
-                    profiles.append({"name": "Disable"});
-                    profiles.append({"name": "Average all images"});
-                    profiles.append({"name": "Moving average"});
+                    profiles.append({"name": qsTr("Disable")});
+                    profiles.append({"name": qsTr("Average all images")});
+                    profiles.append({"name": qsTr("Moving average")});
                     profileValues.push(TimeLapseAssembly.NoDeflicker);
                     profileValues.push(TimeLapseAssembly.Average);
                     profileValues.push(TimeLapseAssembly.MovingAverage);
