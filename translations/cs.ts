@@ -93,23 +93,23 @@
     </message>
     <message>
         <source>Stabilize</source>
-        <translation type="unfinished"></translation>
+        <translation>Stabilizovat</translation>
     </message>
     <message>
         <source>Stabilize video movements by ffmpeg vid.stab.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stabilizovat roztřesené video pomocí ffmpeg vid.stab</translation>
     </message>
     <message>
         <source>Disable</source>
-        <translation type="unfinished"></translation>
+        <translation>Vypnuto</translation>
     </message>
     <message>
         <source>Average all images</source>
-        <translation type="unfinished"></translation>
+        <translation>Průměr všech snímků</translation>
     </message>
     <message>
         <source>Moving average</source>
-        <translation type="unfinished"></translation>
+        <translation>Klouzavý průměr</translation>
     </message>
 </context>
 <context>
