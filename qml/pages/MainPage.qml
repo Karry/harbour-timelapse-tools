@@ -30,6 +30,12 @@ import harbour.timelapsetools 1.0
 Page {
     id: mainPage
 
+    onStatusChanged: {
+        if (status == PageStatus.Activating) {
+            timeLapseModel.update()
+        }
+    }
+
     SilicaListView {
         id: listView
 
@@ -129,6 +135,7 @@ Page {
                                            function() {
                                                console.log("about delete timelapse on row " + model.index);
                                                timeLapseModel.deleteTimeLapse(model.index);
+                                               timeLapseModel.update()
                                            });
                     }
                 }

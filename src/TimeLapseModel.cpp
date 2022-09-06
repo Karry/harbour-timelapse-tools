@@ -25,7 +25,6 @@
 TimeLapseModel::TimeLapseModel(QObject *parent):
   QAbstractListModel(parent)
 {
-  update();
   connect(&dirWatcher, &QFileSystemWatcher::directoryChanged, this, &TimeLapseModel::onDirectoryChanged);
 }
 
@@ -53,21 +52,35 @@ void TimeLapseModel::update() {
   QmlTimeLapseCapture capture;
   dirWatcher.addPaths(capture.getRecordDirectories());
   for (const QString &baseDir: capture.getRecordDirectories()) {
-    QDirIterator dirIt(baseDir, QDir::Dirs | QDir::NoDotAndDotDot, QDirIterator::FollowSymlinks);
-    while (dirIt.hasNext()) {
-      dirIt.next();
-      QFileInfo fInfo(dirIt.filePath());
-      if (fInfo.isDir()) {
-        qDebug() << baseDir << "subdir:" << dirIt.filePath() << QDir(fInfo.filePath()).dirName();
-        QDir dir(fInfo.filePath());
-        timelapses << Dir{dir, birthTime(dir)};
-      }
-    }
+    checkDir(QDir(baseDir));
     std::sort(timelapses.begin(), timelapses.end(), dirComparator);
   }
   qDebug() << "found" << timelapses.size() << "timelapses";
 
   endResetModel();
+}
+
+void TimeLapseModel::checkDir(QDir const &dir) {
+  qDebug() << "Checking " << dir.dirName() << " for captures";
+  QDir filteredDir(dir);
+  filteredDir.setFilter(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+  const QStringList fileSuffixes = {QStringLiteral("jpeg"), QStringLiteral("jpg")};
+  QDirIterator dirIt(filteredDir, QDirIterator::FollowSymlinks);
+  bool containsCaptures = false;
+  while (dirIt.hasNext()) {
+    dirIt.next();
+    if (dirIt.fileInfo().isFile() || dirIt.fileInfo().isSymLink()) {
+      if (fileSuffixes.isEmpty() || fileSuffixes.contains(dirIt.fileInfo().completeSuffix(), Qt::CaseInsensitive)) {
+        containsCaptures = true;
+      }
+    } else if (dirIt.fileInfo().isDir()) {
+      checkDir(dirIt.filePath());
+    }
+  }
+  if (containsCaptures) {
+    qDebug() << "subdir:" << dir.path() << dir.dirName();
+    timelapses << Dir{dir, birthTime(dir)};
+  }
 }
 
 int TimeLapseModel::rowCount(const QModelIndex &) const {

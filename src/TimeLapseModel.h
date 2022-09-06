@@ -57,9 +57,10 @@ public:
   Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const override;
   QHash<int, QByteArray> roleNames() const override;
   Q_INVOKABLE Qt::ItemFlags flags(const QModelIndex &index) const override;
+  Q_INVOKABLE void update();
 
 private:
-  void update();
+  void checkDir(QDir const &dir);
 
 private:
   QFileSystemWatcher dirWatcher;
