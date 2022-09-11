@@ -34,7 +34,7 @@ import "../custom/Utils.js" as Utils
 Page {
     id: capturePage
 
-    property string name: Qt.formatDateTime(new Date())
+    property string name: Utils.defaultName()
     property var camera: null
     property int interval: 1000
     property string baseDir: ""

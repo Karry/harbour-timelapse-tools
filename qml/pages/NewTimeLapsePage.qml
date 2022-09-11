@@ -36,6 +36,7 @@ Page {
 
     allowedOrientations: Orientation.Landscape
     property var camera: null
+    property bool validates: nameField.acceptableInput
 
     property int settingWidth: Math.min(newTimeLapsePage.width / 3, 1200)
 
@@ -263,8 +264,8 @@ Page {
             TextField {
                 id: nameField
                 label: qsTr("Name")
-                text: Qt.formatDateTime(new Date())
-                validator: RegExpValidator { regExp: /[^\/*:]{1,}/ }
+                text: Utils.defaultName()
+                validator: RegExpValidator { regExp: /[^\/*\\]{1,}/ }
             }
             TextField {
                 id: intervalField
@@ -672,7 +673,7 @@ Page {
         border.width: 5
         border.color: "white"
         color: "red"
-        visible: camera != null
+        visible: (camera != null) && newTimeLapsePage.validates
 
         MouseArea {
             anchors.fill: parent

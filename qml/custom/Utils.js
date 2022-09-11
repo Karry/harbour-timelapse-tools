@@ -50,3 +50,7 @@ function humanDurationLong(seconds){
     if (sec     < 10) {sec = "0"+sec;}
     return hours+':'+minutes+':'+sec;
 }
+
+function defaultName(){
+    return Qt.formatDateTime(new Date(), "yyyy-MM-dd-HH:mm")
+}
