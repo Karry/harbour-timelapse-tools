@@ -94,10 +94,10 @@ Page {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.rightMargin: Theme.paddingMedium
-                text: Qt.formatDateTime(birthTime)
+                text: Qt.formatDateTime(creation)
                 font.pixelSize: Theme.fontSizeExtraSmall
                 color: Theme.secondaryColor
-                visible: Qt.formatDateTime(birthTime) != ""
+                visible: Qt.formatDateTime(creation) != ""
             }
 
             onClicked: {

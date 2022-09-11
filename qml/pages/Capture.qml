@@ -47,7 +47,7 @@ Page {
         id: capture
 
         camera: capturePage.camera
-        dir: capturePage.name
+        name: capturePage.name
         interval: capturePage.interval
         baseDir: capturePage.baseDir
         count: capturePage.count
@@ -84,12 +84,20 @@ Page {
             SectionHeader{ text: qsTr("Capturing details") }
 
             DetailItem {
-                label: qsTr("Folder")
+                label: qsTr("Name")
+                value: capture.name
+            }
+            DetailItem {
+                label: qsTr("Base Folder")
                 value: Utils.humanDirectory(capture.baseDir)
             }
             DetailItem {
-                label: qsTr("Name")
-                value: capture.dir
+                label: qsTr("Folder")
+                value: capture.dirName
+            }
+            DetailItem {
+                label: qsTr("Camera")
+                value: capture.cameraDescription
             }
             DetailItem {
                 label: qsTr("Picture count")
