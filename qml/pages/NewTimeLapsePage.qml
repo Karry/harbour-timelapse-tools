@@ -108,9 +108,36 @@ Page {
     }
 
     states: [
-        State { name: "Generic" },
-        State { name: "Exposure" },
-        State { name: "Focus" }
+        State {
+            name: "Generic"
+            PropertyChanges { target: genericTab; visible: true }
+            PropertyChanges { target: exposureTab; visible: false }
+            PropertyChanges { target: focusTab; visible: false }
+            PropertyChanges {
+                target: flickable
+                contentHeight: genericTab.height + 2*Theme.paddingLarge
+            }
+        },
+        State {
+            name: "Exposure"
+            PropertyChanges { target: genericTab; visible: false }
+            PropertyChanges { target: exposureTab; visible: true }
+            PropertyChanges { target: focusTab; visible: false }
+            PropertyChanges {
+                target: flickable
+                contentHeight: exposureTab.height + 2*Theme.paddingLarge
+            }
+        },
+        State {
+            name: "Focus"
+            PropertyChanges { target: genericTab; visible: false }
+            PropertyChanges { target: exposureTab; visible: false }
+            PropertyChanges { target: focusTab; visible: true }
+            PropertyChanges {
+                target: flickable
+                contentHeight: focusTab.height + 2*Theme.paddingLarge
+            }
+        }
     ]
     state: "Generic"
 
@@ -160,8 +187,6 @@ Page {
         id: timelapseCapture
     }
 
-
-
     SilicaFlickable {
         id: flickable
         anchors {
@@ -169,16 +194,15 @@ Page {
             left: parent.left
             bottom: parent.bottom
         }
+        clip: true
         width: newTimeLapsePage.settingWidth
-        //contentHeight: content.height + header.height + 2*Theme.paddingLarge
 
         VerticalScrollDecorator {}
 
         Column {
+            id: genericTab
             //width: Math.min(parent.width / 2, Math.max(1200, parent.width))
             width: parent.width
-
-            visible: newTimeLapsePage.state == "Generic"
 
             ComboBox {
                 id: cameraComboBox
@@ -353,8 +377,8 @@ Page {
         }
 
         Column {
+            id: exposureTab
             width: parent.width
-            visible: newTimeLapsePage.state == "Exposure"
 
             ComboBox {
                 id: isoComboBox
@@ -509,8 +533,8 @@ Page {
         }
 
         Column {
+            id: focusTab
             width: parent.width
-            visible: newTimeLapsePage.state == "Focus"
 
             ComboBox {
                 id: focusModeComboBox
