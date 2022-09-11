@@ -157,6 +157,14 @@
         <source>Name</source>
         <translation>Jméno</translation>
     </message>
+    <message>
+        <source>Base Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Camera</source>
+        <translation type="unfinished">Kamera</translation>
+    </message>
 </context>
 <context>
     <name>MainPage</name>

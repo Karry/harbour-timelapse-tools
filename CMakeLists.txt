@@ -137,6 +137,7 @@ set(HEADER_FILES
     src/QmlCameraDevice.h
     src/QmlTimeLapseAssembly.h
     src/QmlTimeLapseCapture.h
+    src/TimeLapseItem.h
     src/TimeLapseModel.h
     src/TimeLapseTools.h
     )
@@ -159,6 +160,7 @@ set(SOURCE_FILES
     src/QmlCameraDevice.cpp
     src/QmlTimeLapseAssembly.cpp
     src/QmlTimeLapseCapture.cpp
+    src/TimeLapseItem.cpp
     src/TimeLapseModel.cpp
     src/TimeLapseTools.cpp)
 

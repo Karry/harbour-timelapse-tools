@@ -27,6 +27,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QTextStream>
+#include <QElapsedTimer>
 
 #include <cstdio>
 
@@ -35,10 +36,12 @@ class QmlTimeLapseCapture: public timelapse::TimeLapseCapture {
 
   Q_PROPERTY(QStringList recordDirectories READ getRecordDirectories)
 
-  Q_PROPERTY(QmlCameraDevice* camera READ getCamera WRITE setCamera)
+  Q_PROPERTY(QmlCameraDevice* camera READ getCamera WRITE setCamera NOTIFY cameraChanged)
 
-  Q_PROPERTY(QString dir READ getDir  WRITE setDir)
+  Q_PROPERTY(QString name READ getName  WRITE setName)
+  Q_PROPERTY(QString dirName READ getDirName  NOTIFY dirNameChanged)
   Q_PROPERTY(QString baseDir READ getBaseDir  WRITE setBaseDir)
+  Q_PROPERTY(QString cameraDescription READ getCameraDescription NOTIFY cameraChanged)
 
   Q_PROPERTY(bool adaptiveShutterSpeed READ getAdaptiveShutterSpeed WRITE setAdaptiveShutterSpeed)
   Q_PROPERTY(QString shutterSpeedStr READ getShutterSpeedStr WRITE setShutterSpeedStr)
@@ -47,11 +50,17 @@ class QmlTimeLapseCapture: public timelapse::TimeLapseCapture {
 public slots :
   void start() override;
 
+  void onDone();
+
+signals:
+  void dirNameChanged();
+  void cameraChanged();
+
 public:
   QmlTimeLapseCapture();
   QmlTimeLapseCapture(const QmlTimeLapseCapture&) = delete;
   QmlTimeLapseCapture(QmlTimeLapseCapture&&) = delete;
-  ~QmlTimeLapseCapture() override = default;
+  ~QmlTimeLapseCapture() override;
   QmlTimeLapseCapture& operator=(const QmlTimeLapseCapture&) = delete;
   QmlTimeLapseCapture& operator=(QmlTimeLapseCapture&&) = delete;
 
@@ -62,20 +71,27 @@ public:
   void setCamera(QmlCameraDevice *camera) {
     if (camera!=nullptr) {
       setDevice(camera->timelapseDevice());
+      emit cameraChanged();
     }
   }
 
-  QString getDir() {
-    return _dir;
+  QString getName() {
+    return _name;
   }
 
-  void setDir(const QString &dir) {
-    _dir=dir;
+  void setName(const QString &name) {
+    _name=name;
+  }
+
+  QString getDirName() {
+    return _dirName;
   }
 
   QString getBaseDir() {
     return _baseDir;
   }
+
+  QString getCameraDescription();
 
   void setBaseDir(const QString &baseDir) {
     _baseDir=baseDir;
@@ -113,6 +129,8 @@ private:
   QTextStream err;
   QTextStream verboseOutput;
   bool _adaptiveShutterSpeed=false;
-  QString _dir;
+  QString _name;
+  QString _dirName;
   QString _baseDir;
+  QElapsedTimer timer;
 };

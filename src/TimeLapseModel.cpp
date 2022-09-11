@@ -33,16 +33,8 @@ void TimeLapseModel::onDirectoryChanged(const QString &) {
   update();
 }
 
-QDateTime birthTime(QDir dir) {
-#if QT_VERSION < QT_VERSION_CHECK(5,10,0)
-  return QFileInfo(dir.path()).created();
-#else
-  return QFileInfo(dir.path()).birthTime();
-#endif
-}
-
-bool dirComparator(const Dir &d1, const Dir &d2) {
-  return d1.birthTime > d2.birthTime;
+bool timelapseComparator(const TimeLapseItem &d1, const TimeLapseItem &d2) {
+  return d1.getCreation() > d2.getCreation();
 }
 
 void TimeLapseModel::update() {
@@ -60,10 +52,10 @@ void TimeLapseModel::update() {
       if (fInfo.isDir()) {
         qDebug() << baseDir << "subdir:" << dirIt.filePath() << QDir(fInfo.filePath()).dirName();
         QDir dir(fInfo.filePath());
-        timelapses << Dir{dir, birthTime(dir)};
+        timelapses << TimeLapseItem(dir);
       }
     }
-    std::sort(timelapses.begin(), timelapses.end(), dirComparator);
+    std::sort(timelapses.begin(), timelapses.end(), timelapseComparator);
   }
   qDebug() << "found" << timelapses.size() << "timelapses";
 
@@ -81,9 +73,11 @@ QVariant TimeLapseModel::data(const QModelIndex &index, int role) const {
 
   const auto &dir = timelapses[index.row()];
   switch(role){
-    case NameRole: return dir.dir.dirName();
-    case PathRole: return dir.dir.path();
-    case BirthTimeRole: return dir.birthTime;
+    case NameRole: return dir.getName();
+    case PathRole: return dir.getDir().path();
+    case CreationRole: return dir.getCreation();
+    case DurationRole: return int(dir.getDuration().count());
+    case CameraRole: return dir.getCamera();
   }
   return QVariant();
 }
@@ -93,7 +87,7 @@ void TimeLapseModel::deleteTimeLapse(int row) {
     return;
   }
 
-  QDir dir = timelapses[row].dir;
+  QDir dir = timelapses[row].getDir();
   qDebug() << "Removing" << dir;
   dir.removeRecursively();
 }
@@ -103,11 +97,8 @@ void TimeLapseModel::rename(int row, QString newName) {
     return;
   }
 
-  QDir dir = timelapses[row].dir;
-  QDir parent = dir;
-  parent.cdUp();
-  qDebug() << "renaming" << dir.path() << "to" << (parent.path() + QDir::separator() + newName);
-  if (!dir.rename(dir.path(), parent.path() + QDir::separator() + newName)) {
+  timelapses[row].setName(newName);
+  if (!timelapses[row].writeMetadata()) {
     qWarning() << "Renaming fails.";
   }
 }
@@ -117,7 +108,9 @@ QHash<int, QByteArray> TimeLapseModel::roleNames() const {
 
   roles[NameRole]="name";
   roles[PathRole]="path";
-  roles[BirthTimeRole]="birthTime";
+  roles[CreationRole]="creation";
+  roles[DurationRole]="duration";
+  roles[CameraRole]="camera";
 
   return roles;
 }

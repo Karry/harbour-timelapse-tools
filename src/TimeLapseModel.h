@@ -19,16 +19,13 @@
 
 #pragma once
 
+#include <TimeLapseItem.h>
+
 #include <QObject>
 #include <QAbstractListModel>
 #include <QDir>
 #include <QFileSystemWatcher>
 #include <QDateTime>
-
-struct Dir {
-  QDir dir;
-  QDateTime birthTime;
-};
 
 class TimeLapseModel: public QAbstractListModel {
 Q_OBJECT
@@ -49,7 +46,9 @@ public:
   enum Roles {
     NameRole = Qt::UserRole,
     PathRole = Qt::UserRole +1,
-    BirthTimeRole = Qt::UserRole +2
+    CreationRole = Qt::UserRole + 2,
+    DurationRole = Qt::UserRole + 3,
+    CameraRole = Qt::UserRole + 4
   };
   Q_ENUM(Roles)
 
@@ -63,5 +62,5 @@ private:
 
 private:
   QFileSystemWatcher dirWatcher;
-  QList <Dir> timelapses;
+  QList <TimeLapseItem> timelapses;
 };

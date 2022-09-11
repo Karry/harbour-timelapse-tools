@@ -288,7 +288,6 @@ Page {
                 id: nameField
                 label: qsTr("Name")
                 text: Qt.formatDateTime(new Date())
-                validator: RegExpValidator { regExp: /[^\/*:]{1,}/ }
             }
             TextField {
                 id: intervalField
