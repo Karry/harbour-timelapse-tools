@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="cs">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="cs">
 <context>
     <name>Assembly</name>
     <message>
@@ -159,19 +157,23 @@
     </message>
     <message>
         <source>Base Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Cílová složka</translation>
     </message>
     <message>
         <source>Camera</source>
-        <translation type="unfinished">Kamera</translation>
+        <translation>Kamera</translation>
     </message>
     <message>
         <source>Camera battery</source>
-        <translation type="unfinished"></translation>
+        <translation>Baterie kamery</translation>
     </message>
     <message>
         <source>Phone battery</source>
-        <translation type="unfinished"></translation>
+        <translation>Baterie telefonu</translation>
+    </message>
+    <message>
+        <source>Shutter speed</source>
+        <translation>Čas závěrky</translation>
     </message>
 </context>
 <context>
