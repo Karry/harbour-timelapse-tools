@@ -24,6 +24,7 @@
 #include <QmlTimeLapseAssembly.h>
 #include <QmlTimeLapseCapture.h>
 #include <TimeLapseModel.h>
+#include <BatteryMonitor.h>
 
 #include <Arguments.h>
 
@@ -141,6 +142,7 @@ Q_DECL_EXPORT int main(int argc, char* argv[]) {
   qmlRegisterType<QmlTimeLapseAssembly>("harbour.timelapsetools", 1, 0, "TimeLapseAssembly");
   qmlRegisterType<QmlTimeLapseCapture>("harbour.timelapsetools", 1, 0, "TimeLapseCapture");
   qmlRegisterType<TimeLapseModel>("harbour.timelapsetools", 1, 0, "TimeLapseModel");
+  qmlRegisterType<BatteryMonitor>("harbour.timelapsetools", 1, 0, "BatteryMonitor");
 
   qRegisterMetaType<QmlTimeLapseAssembly::AssemblyParams>("AssemblyParams");
 

@@ -132,6 +132,7 @@ set(HEADER_FILES
     src/osmscout/util/CmdLineParsing.h
     src/osmscout/util/String.h
     src/Arguments.h
+    src/BatteryMonitor.h
     src/CameraModel.h
     src/IconProvider.h
     src/QmlCameraDevice.h
@@ -156,6 +157,7 @@ set(QML_FILES
 set(SOURCE_FILES
     src/osmscout/util/CmdLineParsing.cpp
     src/osmscout/util/String.cpp
+    src/BatteryMonitor.cpp
     src/CameraModel.cpp
     src/QmlCameraDevice.cpp
     src/QmlTimeLapseAssembly.cpp

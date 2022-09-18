@@ -69,6 +69,10 @@ Page {
         }
     }
 
+    BatteryMonitor {
+        id: batteryMonitor
+    }
+
     SilicaFlickable{
         id: flickable
         anchors.fill: parent
@@ -107,6 +111,11 @@ Page {
                 label: qsTr("Camera battery")
                 value: camera.batteryLevel
                 visible: camera != null && camera.batteryLevel != ""
+            }
+            DetailItem {
+                label: qsTr("Phone battery")
+                value: batteryMonitor.level + " %"
+                visible: batteryMonitor.level >= 0;
             }
         }
     }

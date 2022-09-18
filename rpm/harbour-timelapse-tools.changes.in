@@ -24,4 +24,4 @@
 - fix height and scrolling of left panel on "new timelapse" page. Thanks Flypig (David Llewellyn-Jones) for the fix.
 - store timelapse metadata (even name) to json file. It fixes timelapse model when name contains slash. Thanks Flypig for report
 - improve timelapse model updates (don't reset whole model on every change)
-- show camera battery level during capturing
+- show phone and camera battery level during capturing

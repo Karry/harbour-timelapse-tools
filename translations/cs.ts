@@ -169,6 +169,10 @@
         <source>Camera battery</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Phone battery</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainPage</name>
