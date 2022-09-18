@@ -26,3 +26,4 @@
 - improve timelapse model updates (don't reset whole model on every change)
 - show phone and camera battery level during capturing
 - show camera shutter speed during capturing
+- update Czech translation
