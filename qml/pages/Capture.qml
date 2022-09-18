@@ -103,6 +103,11 @@ Page {
                 label: qsTr("Picture count")
                 value: capture.capturedCount
             }
+            DetailItem {
+                label: qsTr("Camera battery")
+                value: camera.batteryLevel
+                visible: camera != null && camera.batteryLevel != ""
+            }
         }
     }
 }

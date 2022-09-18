@@ -22,11 +22,15 @@
 
 #include <TimeLapse/pipeline_cpt_qcamera.h>
 
+#include <cassert>
+
 QmlCameraDevice::QmlCameraDevice(const QSharedPointer<timelapse::CaptureDevice>& dev):
   dev(dev) {
 
+  assert(dev);
   connect(dev.data(), &timelapse::CaptureDevice::update, this, &QmlCameraDevice::update);
   connect(dev.data(), &timelapse::CaptureDevice::update, this, &QmlCameraDevice::onUpdate);
+  connect(dev.data(), &timelapse::CaptureDevice::batteryLevelChanged, this, &QmlCameraDevice::batteryLevelChanged);
 }
 
 void QmlCameraDevice::onUpdate() {

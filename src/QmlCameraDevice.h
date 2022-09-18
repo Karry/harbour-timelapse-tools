@@ -43,6 +43,8 @@ class QmlCameraDevice: public QObject {
   Q_PROPERTY(QString position READ getPosition NOTIFY update)
   Q_PROPERTY(QSize resolution READ getResolution NOTIFY update)
 
+  Q_PROPERTY(QString batteryLevel READ getBatteryLevel NOTIFY batteryLevelChanged)
+
   Q_PROPERTY(QStringList shutterSpeedOptions READ getShutterSpeedOptions NOTIFY update)
   Q_PROPERTY(QStringList apertureOptions READ getApertureOptions NOTIFY update)
   Q_PROPERTY(QStringList isoOptions READ getIsoOptions NOTIFY update)
@@ -61,6 +63,7 @@ class QmlCameraDevice: public QObject {
 
 signals:
   void update();
+  void batteryLevelChanged();
 
 public slots :
   void start();
@@ -117,6 +120,10 @@ public:
 
   QSharedPointer<timelapse::CaptureDevice> timelapseDevice() {
     return dev;
+  }
+
+  QString getBatteryLevel() const {
+    return dev->getBatteryLevel();
   }
 
   static QString positionString(QCamera::Position position);
