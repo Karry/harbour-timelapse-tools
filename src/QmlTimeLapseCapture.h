@@ -46,6 +46,7 @@ class QmlTimeLapseCapture: public timelapse::TimeLapseCapture {
   Q_PROPERTY(bool adaptiveShutterSpeed READ getAdaptiveShutterSpeed WRITE setAdaptiveShutterSpeed)
   Q_PROPERTY(QString shutterSpeedStr READ getShutterSpeedStr WRITE setShutterSpeedStr)
   Q_PROPERTY(QString maxShutterSpeedStr READ getMaxShutterSpeedStr WRITE setMaxShutterSpeedStr)
+  Q_PROPERTY(QString currentShutterSpeedStr READ getCurrentShutterSpeedStr NOTIFY currentShutterSpeedStrChanged)
 
 public slots :
   void start() override;
@@ -55,6 +56,7 @@ public slots :
 signals:
   void dirNameChanged();
   void cameraChanged();
+  void currentShutterSpeedStrChanged();
 
 public:
   QmlTimeLapseCapture();
@@ -119,6 +121,10 @@ public:
 
   void setMaxShutterSpeedStr(const QString &maxShutterSpeed) {
     setMaxShutterSpeed(ShutterSpeedChoice(maxShutterSpeed));
+  }
+
+  QString getCurrentShutterSpeedStr() {
+    return getCurrentShutterSpeed().toString();
   }
 
   QStringList getRecordDirectories() const;

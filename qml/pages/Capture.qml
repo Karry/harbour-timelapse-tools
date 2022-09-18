@@ -108,6 +108,11 @@ Page {
                 value: capture.capturedCount
             }
             DetailItem {
+                label: qsTr("Shutter speed")
+                value: capture.currentShutterSpeedStr
+                visible: capture.currentShutterSpeedStr != "Unknown"
+            }
+            DetailItem {
                 label: qsTr("Camera battery")
                 value: camera.batteryLevel
                 visible: camera != null && camera.batteryLevel != ""

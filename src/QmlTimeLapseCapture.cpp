@@ -32,6 +32,7 @@ QmlTimeLapseCapture::QmlTimeLapseCapture():
   err(stderr), verboseOutput(stdout)
 {
   connect(this, &TimeLapseCapture::done, this, &QmlTimeLapseCapture::onDone);
+  connect(this, &TimeLapseCapture::currentShutterSpeedChanged, this, &QmlTimeLapseCapture::currentShutterSpeedStrChanged);
 }
 
 QmlTimeLapseCapture::~QmlTimeLapseCapture() {
