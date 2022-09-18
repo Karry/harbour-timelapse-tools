@@ -38,12 +38,11 @@ bool timelapseComparator(const TimeLapseItem &d1, const TimeLapseItem &d2) {
 }
 
 void TimeLapseModel::update() {
-  beginResetModel();
-
-  timelapses.clear();
   dirWatcher.removePaths(dirWatcher.directories());
   QmlTimeLapseCapture capture;
   dirWatcher.addPaths(capture.getRecordDirectories());
+
+  QList<TimeLapseItem> freshList;
   for (const QString &baseDir: capture.getRecordDirectories()) {
     QDirIterator dirIt(baseDir, QDir::Dirs | QDir::NoDotAndDotDot, QDirIterator::FollowSymlinks);
     while (dirIt.hasNext()) {
@@ -52,14 +51,52 @@ void TimeLapseModel::update() {
       if (fInfo.isDir()) {
         qDebug() << baseDir << "subdir:" << dirIt.filePath() << QDir(fInfo.filePath()).dirName();
         QDir dir(fInfo.filePath());
-        timelapses << TimeLapseItem(dir);
+        freshList << TimeLapseItem(dir);
       }
     }
-    std::sort(timelapses.begin(), timelapses.end(), timelapseComparator);
+    // std::sort(freshList.begin(), freshList.end(), timelapseComparator);
   }
-  qDebug() << "found" << timelapses.size() << "timelapses";
+  qDebug() << "found" << freshList.size() << "timelapses";
 
-  endResetModel();
+  // update model
+
+  // remove disappearing
+  QSet<QString> freshSet;
+  for (const auto &i: freshList) {
+    freshSet.insert(i.getDir().absolutePath());
+  }
+
+  for (int i=0; i<timelapses.size();) {
+    if (freshSet.contains(timelapses.at(i).getDir().absolutePath())) {
+      i++;
+    } else {
+      beginRemoveRows(QModelIndex(), i, i);
+      timelapses.removeAt(i);
+      endRemoveRows();
+    }
+  }
+
+  // add new rows
+  QSet<QString> existingSet;
+  for (const auto &i: timelapses) {
+    existingSet.insert(i.getDir().absolutePath());
+  }
+
+  for (int i=0; i<freshList.size(); i++) {
+    const auto &entry=freshList.at(i);
+    if (!existingSet.contains(entry.getDir().absolutePath())) {
+      // find new place
+      int j=0;
+      for (; j<timelapses.size(); j++) {
+        if (timelapseComparator(entry, timelapses.at(j))) {
+          break;
+        }
+      }
+      beginInsertRows(QModelIndex(), j, j);
+      timelapses.insert(j, entry);
+      endInsertRows();
+    }
+  }
 }
 
 int TimeLapseModel::rowCount(const QModelIndex &) const {
