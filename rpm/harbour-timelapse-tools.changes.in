@@ -27,3 +27,6 @@
 - show phone and camera battery level during capturing
 - show camera shutter speed during capturing
 - update Czech translation
+
+* 202*-*-* Lukáš Karas <lukas.karas@centrum.cz> 0.4-1
+- update ffmpeg from 5.0.1 to 7.0.2 to fix build on Ubuntu 24.04

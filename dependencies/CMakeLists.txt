@@ -178,8 +178,8 @@ set(ffmpeg_BIN
     ${CMAKE_CURRENT_BINARY_DIR}/installroot/bin/ffmpeg)
 
 ExternalProject_Add(ffmpeg
-    URL "${CMAKE_CURRENT_SOURCE_DIR}/ffmpeg-5.0.1.tar.gz"
-    URL_HASH SHA256=840c012766ceb1a95ec92fcbe51d80024a74b1b3134c92c2ff64a6f8165e9059
+    URL "${CMAKE_CURRENT_SOURCE_DIR}/ffmpeg-7.0.2.tar.xz"
+    URL_HASH SHA256=8646515b638a3ad303e23af6a3587734447cb8fc0a0c064ecdb8e95c4fd8b389
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
     CONFIGURE_COMMAND cmake -E env
         "PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig"
