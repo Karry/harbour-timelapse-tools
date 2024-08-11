@@ -15,7 +15,7 @@ Name:       harbour-timelapse-tools
 # << macros
 
 Summary:    TimeLapse tools for Sailfish OS
-Version:    0.3
+Version:    0.4
 Release:    1
 Group:      Qt/Qt
 License:    GPLv2
