@@ -29,11 +29,14 @@
 #include <TimeLapse/pipeline_write_frame.h>
 #include <TimeLapse/pipeline_cpt_qcamera.h>
 
-#if QT_VERSION < QT_VERSION_CHECK(5,14,0)
+
+namespace timelapse {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 inline QTextStream &endl(QTextStream &s) {
   return QTextStreamFunctions::endl(s);
 }
 #endif
+}
 
 CameraModel::CameraModel(QObject *parent):
   QAbstractListModel(parent)
@@ -43,10 +46,10 @@ CameraModel::CameraModel(QObject *parent):
   if (devices.isEmpty()) {
     verboseOutput << QCoreApplication::translate("main", "No compatible capture device found");
   } else {
-    verboseOutput << "Found devices: " << endl;
+    verboseOutput << "Found devices: " << timelapse::endl;
     for (QSharedPointer<timelapse::CaptureDevice> d : devices) {
       connect(d.data(), &timelapse::CaptureDevice::update, this, &CameraModel::onCameraUpdate);
-      verboseOutput << "  " << d->toString() << endl;
+      verboseOutput << "  " << d->toString() << timelapse::endl;
     }
   }
 }
@@ -122,7 +125,7 @@ QList<QSharedPointer<timelapse::CaptureDevice>> CameraModel::listDevices() {
       result.push_back(QSharedPointer<timelapse::Gphoto2Device>(new timelapse::Gphoto2Device(gp2Dev)));
     }
   } catch (std::exception &e) {
-    err << "Can't get Gphoto2 devices. " << QString::fromUtf8(e.what()) << endl;
+    err << "Can't get Gphoto2 devices. " << QString::fromUtf8(e.what()) << timelapse::endl;
   }
 
   {
