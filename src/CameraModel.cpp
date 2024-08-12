@@ -31,7 +31,12 @@
 
 
 namespace timelapse {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5,14,0)
+// for compatibility with Qt < 5.14 we are not using Qt::endl directly
+// inline QTextStream &endl(QTextStream &s) {
+//   return Qt::endl(s);
+// }
+#elif QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
 inline QTextStream &endl(QTextStream &s) {
   return QTextStreamFunctions::endl(s);
 }
