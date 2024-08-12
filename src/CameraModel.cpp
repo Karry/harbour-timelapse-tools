@@ -20,6 +20,7 @@
 #include <CameraModel.h>
 
 #include <QmlCameraDevice.h>
+#include <QTextStream>
 
 #include <TimeLapse/timelapse.h>
 #include <TimeLapse/pipeline_cpt.h>
