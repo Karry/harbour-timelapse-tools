@@ -1,6 +1,6 @@
 [submodule "dependencies/vidstab"]
 	path = dependencies/vidstab
-	url = https://github.com/Karry/vid.stab.git
+	url = https://github.com/georgmartius/vid.stab.git
 	branch = improvements
 [submodule "dependencies/TimeLapse"]
 	path = dependencies/TimeLapse
