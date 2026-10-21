@@ -156,11 +156,11 @@ ExternalProject_Add(x265
 
 set(x264_LIBRARY
     ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx264.so
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx264.so.164)
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx264.so.165)
 
 ExternalProject_Add(x264
-    URL "${CMAKE_CURRENT_SOURCE_DIR}/x264-master20220721.tar.bz2"
-    URL_HASH SHA256=876383c0bcc7bde562d2db350c4754114e8c4c0ce1228018cad0cc5f4ce1253b
+    URL "${CMAKE_CURRENT_SOURCE_DIR}/x264-master20261022.tar.bz2"
+    URL_HASH SHA256=b5989ad76e0022b114e42162780a28e202dd525b42eede49bb8a025b373fcab4
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
     CONFIGURE_COMMAND cmake -E env
         "PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig"
