@@ -25,6 +25,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <cinttypes>
 #include <sstream>
 #include <cstdint>
 

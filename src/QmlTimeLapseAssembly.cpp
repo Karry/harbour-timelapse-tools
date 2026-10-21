@@ -31,9 +31,6 @@
 #include <QTextStream>
 #include <QStandardPaths>
 
-#include <istream> // have to be before tar.hpp
-#include <tar/tar.hpp>
-
 #include <cassert>
 #include <algorithm>
 
@@ -75,37 +72,6 @@ void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
   if (output.exists()) {
     emit error(tr("Output file already exists"));
     return;
-  }
-
-  // unpack ffmpeg
-  // cd .cache/cz.karry.timelapse/TimeLapseTools/
-  // tar -xf /usr/share/harbour-timelapse-tools/bin/ffmpeg.tar
-  QString cacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
-  QString ffmpegBinary = cacheDir + QDir::separator() + "ffmpeg";
-  QString ffmpegArchive = "/usr/share/harbour-timelapse-tools/bin/ffmpeg.tar";
-  if (QFileInfo ffmpegInfo = QFileInfo(ffmpegBinary);
-      !ffmpegInfo.exists() || ffmpegInfo.created() < QFileInfo(ffmpegArchive).created()) {
-    try {
-      emit progress(tr("Unpacking ffmpeg"));
-      if (ffmpegInfo.exists()) {
-        if (!QFile(ffmpegBinary).remove()) {
-          qWarning() << "Failed to remove " << ffmpegBinary;
-        }
-      }
-      tar::tar_reader tar(ffmpegArchive.toStdString());
-      std::istream &is = tar.get("ffmpeg");
-      std::ofstream os(ffmpegBinary.toStdString().c_str(), std::ios_base::out | std::ios_base::binary);
-      std::copy(istreambuf_iterator<char>(is), istreambuf_iterator<char>(), ostreambuf_iterator<char>(os));
-      os.close();
-      if (!is.good() || !os.good()) {
-        throw std::runtime_error("IO error");
-      }
-    } catch  (const std::exception &e) {
-      qWarning() << "Failed to unpack ffmpeg:" << e.what();
-      emit error(tr("Failed to unpack ffmpeg: %1").arg(e.what()));
-      return;
-    }
-    QFile(ffmpegBinary).setPermissions(QFile::ExeGroup | QFile::ExeOther | QFile::ExeUser);
   }
 
   // check temp dir
@@ -211,6 +177,9 @@ void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
     *pipeline << new FramePrepare(&resources->verboseOutput, params.frameCount());
   }
   *pipeline << new WriteFrame(QDir(resources->dir.path()), &resources->verboseOutput, false);
+
+  // may be this hardcoded path problem?
+  QString ffmpegBinary = "/usr/share/harbour-timelapse-tools/libexec/ffmpeg";
 
   VideoAssembly *assembly = new VideoAssembly(QDir(resources->dir.path()), &resources->verboseOutput, &resources->err, false,
                                               output,
