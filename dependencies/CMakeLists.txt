@@ -189,7 +189,11 @@ ExternalProject_Add(ffmpeg
         "CFLAGS=-I<INSTALL_DIR>/include"
         "CPPFLAGS=-I<INSTALL_DIR>/include"
         "LDFLAGS=-L<INSTALL_DIR>/lib -Wl,-rpath=/usr/share/harbour-timelapse-tools/lib"
+<<<<<<< HEAD
         <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-x86asm --enable-gpl --enable-libx264 --enable-libx265 --disable-doc
+=======
+        <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-x86asm --disable-libdrm --enable-gpl --enable-libx264 --enable-libx265
+>>>>>>> 248dcd4 (distribute ffmpeg as private executable)
     BUILD_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT} install
     TEST_COMMAND ""
@@ -335,18 +339,4 @@ set(DEP_LIBS
     ${libgd_LIBRARY}
     ${libjpeg_LIBRARY}
     ${libusb_LIBRARY}
-    PARENT_SCOPE)
-
-find_program(TAR bsdtar REQUIRED)
-
-add_custom_target(tarFfmpeg ALL
-    # unpacker supports just old posix tar format
-    # for POSIX tar format we need to specify --format=ustar
-    COMMAND ${TAR} --format=ustar -cf ffmpeg.tar ffmpeg
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installroot/bin
-    BYPRODUCTS "${ffmpeg_BIN}.tar"
-    DEPENDS ffmpeg)
-
-set(ffmpeg_TAR
-    "${ffmpeg_BIN}.tar"
     PARENT_SCOPE)

@@ -116,11 +116,11 @@
     <name>AssemblyProcess</name>
     <message>
         <source>Failed to unpack ffmpeg: %1</source>
-        <translation>Selhalo rozbalení ffmpeg: %1</translation>
+        <translation type="vanished">Selhalo rozbalení ffmpeg: %1</translation>
     </message>
     <message>
         <source>Unpacking ffmpeg</source>
-        <translation>Rozbaluji ffmpeg</translation>
+        <translation type="vanished">Rozbaluji ffmpeg</translation>
     </message>
     <message>
         <source>Stage %1, processing image %2</source>
