@@ -57,15 +57,17 @@ ExternalProject_Add(libgd
 set(libjpeg_LIBRARY
     ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libjpeg.so
     ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libjpeg.so.62
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libjpeg.so.62.3.0)
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libjpeg.so.62.4.0)
 
 ExternalProject_Add(libjpeg
-    URL "${CMAKE_CURRENT_SOURCE_DIR}/libjpeg-turbo-2.1.3.tar.gz"
-    URL_HASH SHA256=467b310903832b033fe56cd37720d1b73a6a3bd0171dbf6ff0b620385f4f76d0
+    URL "${CMAKE_CURRENT_SOURCE_DIR}/libjpeg-turbo-3.2.0.tar.gz"
+    URL_HASH SHA256=6f30092cef9fb839779646608f4ee14ae3cbac989c47fa05e841b0841f09878e
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
         -DCMAKE_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/installroot
+        # Bundled zlib/libspng object libraries are also linked into libturbojpeg.so.
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON
     BUILD_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT} install
     TEST_COMMAND ""
