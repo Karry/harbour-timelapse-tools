@@ -12,6 +12,10 @@ Name:       harbour-timelapse-tools
 # list here all the libraries your RPM installs
 %define __requires_exclude ^ld-linux|libMagick*|libgphoto2*|libtimelapse.so|libv4l*|libvidstab.so.*|libgd.so.*|libjpeg.so.*|libltdl.so.*|libusb-1.0.so.*$
 
+# skip brp-remove-la-files (and other post-install scripts) to keep *.la files in the ImageMagick lib directory,
+# because they are needed to find the coders
+%define __os_install_post %{nil}
+
 # << macros
 
 Summary:    TimeLapse tools for Sailfish OS

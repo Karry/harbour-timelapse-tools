@@ -98,24 +98,25 @@ ExternalProject_Add(libusb
 # ImageMagick
 
 set(ImageMagick_LIBRARY
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-6.Q16.so
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-6.Q16.so.9
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-6.Q16.so.9.0.0
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickCore-6.Q16.so
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickCore-6.Q16.so.7
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickCore-6.Q16.so.7.0.0
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickWand-6.Q16.so
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickWand-6.Q16.so.7
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickWand-6.Q16.so.7.0.0)
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-7.Q16HDRI.so
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-7.Q16HDRI.so.5
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-7.Q16HDRI.so.5.0.0
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickCore-7.Q16HDRI.so
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickCore-7.Q16HDRI.so.10
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickCore-7.Q16HDRI.so.10.0.3
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickWand-7.Q16HDRI.so
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickWand-7.Q16HDRI.so.10
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickWand-7.Q16HDRI.so.10.0.3
+    )
 
 ExternalProject_Add(ImageMagick
-    URL "${CMAKE_CURRENT_SOURCE_DIR}/ImageMagick-6.9.12-50.tar.gz"
-    URL_HASH SHA256=178dcf059963840e35ae034ecb9dc82c8549692c33d98ff0b6a7f3aadc9a1605
+    URL "${CMAKE_CURRENT_SOURCE_DIR}/ImageMagick-7.1.2-34.tar.gz"
+    URL_HASH SHA256=f5163a573a1c1bff16358d0a592b2fb168ad0fd3b9dc5ff57dc7820eebc5cf79
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
     CONFIGURE_COMMAND cmake -E env
         "PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig"
-        "CFLAGS=-I<INSTALL_DIR>/include   -DMAGICKCORE_CONFIGURE_PATH=\\\"/usr/share/harbour-timelapse-tools/etc/ImageMagick-6/\\\" -DMAGICKCORE_LIBRARY_PATH=\\\"/usr/share/harbour-timelapse-tools/lib/ImageMagick-6.9.12/\\\" -DMAGICKCORE_SHARE_PATH=\\\"/usr/share/harbour-timelapse-tools/share/ImageMagick-6/\\\" -DMAGICKCORE_DOCUMENTATION_PATH=\\\"/usr/share/harbour-timelapse-tools/share/doc/ImageMagick-6/\\\""
-        "CPPFLAGS=-I<INSTALL_DIR>/include -DMAGICKCORE_CONFIGURE_PATH=\\\"/usr/share/harbour-timelapse-tools/etc/ImageMagick-6/\\\" -DMAGICKCORE_LIBRARY_PATH=\\\"/usr/share/harbour-timelapse-tools/lib/ImageMagick-6.9.12/\\\" -DMAGICKCORE_SHARE_PATH=\\\"/usr/share/harbour-timelapse-tools/share/ImageMagick-6/\\\" -DMAGICKCORE_DOCUMENTATION_PATH=\\\"/usr/share/harbour-timelapse-tools/share/doc/ImageMagick-6/\\\""
+        "CFLAGS=-I<INSTALL_DIR>/include   -DMAGICKCORE_CONFIGURE_PATH=\\\"/usr/share/harbour-timelapse-tools/etc/ImageMagick-7/\\\" -DMAGICKCORE_LIBRARY_PATH=\\\"/usr/share/harbour-timelapse-tools/lib/ImageMagick-7.1.2/\\\" -DMAGICKCORE_SHARE_PATH=\\\"/usr/share/harbour-timelapse-tools/share/ImageMagick-7/\\\" -DMAGICKCORE_DOCUMENTATION_PATH=\\\"/usr/share/harbour-timelapse-tools/share/doc/ImageMagick-7/\\\""
+        "CPPFLAGS=-I<INSTALL_DIR>/include -DMAGICKCORE_CONFIGURE_PATH=\\\"/usr/share/harbour-timelapse-tools/etc/ImageMagick-7/\\\" -DMAGICKCORE_LIBRARY_PATH=\\\"/usr/share/harbour-timelapse-tools/lib/ImageMagick-7.1.2/\\\" -DMAGICKCORE_SHARE_PATH=\\\"/usr/share/harbour-timelapse-tools/share/ImageMagick-7/\\\" -DMAGICKCORE_DOCUMENTATION_PATH=\\\"/usr/share/harbour-timelapse-tools/share/doc/ImageMagick-7/\\\""
         "LDFLAGS=-L<INSTALL_DIR>/lib -Wl,-rpath=/usr/share/harbour-timelapse-tools/lib"
         <SOURCE_DIR>/configure --prefix <INSTALL_DIR> --with-sysroot=<INSTALL_DIR> --with-modules --without-freetype --disable-openmp
     BUILD_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT}
@@ -126,7 +127,7 @@ ExternalProject_Add(ImageMagick
     )
 
 add_library(ImageMagick::ImageMagick INTERFACE IMPORTED GLOBAL)
-target_include_directories(ImageMagick::ImageMagick INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/installroot/include/ImageMagick-6)
+target_include_directories(ImageMagick::ImageMagick INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/installroot/include/ImageMagick-7)
 target_link_libraries(ImageMagick::ImageMagick INTERFACE "${ImageMagick_LIBRARY}")  # need the quotes to expand list
 # howto pickup CFlags from pkg config file?
 target_compile_options(ImageMagick::ImageMagick INTERFACE -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16)
@@ -306,7 +307,7 @@ ExternalProject_Add(TimeLapse
     )
 
 # older CMake is complaining when include did not exist at configure time
-execute_process(COMMAND mkdir -p "${CMAKE_CURRENT_BINARY_DIR}/installroot/include/ImageMagick-6")
+execute_process(COMMAND mkdir -p "${CMAKE_CURRENT_BINARY_DIR}/installroot/include/ImageMagick-7")
 
 add_library(TimeLapse::TimeLapse INTERFACE IMPORTED GLOBAL)
 target_include_directories(TimeLapse::TimeLapse INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/installroot/include)

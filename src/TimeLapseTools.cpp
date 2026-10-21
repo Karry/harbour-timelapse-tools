@@ -173,8 +173,10 @@ Q_DECL_EXPORT int main(int argc, char* argv[]) {
   }
 
   // setup ImageMagick, see https://imagemagick.org/script/resources.php
+  // MAGICK_DEBUG=Module,Configure for debugging
   // TODO: it is working?
-  qputenv("MAGICK_CONFIGURE_PATH", "/usr/share/harbour-timelapse-tools/etc/ImageMagick-6");
+  qputenv("MAGICK_CONFIGURE_PATH", "/usr/share/harbour-timelapse-tools/etc/ImageMagick-7");
+  qputenv("MAGICK_CODER_MODULE_PATH", "/usr/share/harbour-timelapse-tools/lib/ImageMagick-7.1.2/modules-Q16HDRI/coders");
   qputenv("MAGICK_HOME", "/usr/share/harbour-timelapse-tools");
   Magick::InitializeMagick(*argv);
 

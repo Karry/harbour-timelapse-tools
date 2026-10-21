@@ -238,14 +238,14 @@ install(FILES
     ${ffmpeg_TAR}
     DESTINATION share/${HARBOUR_APP_NAME}/bin)
 
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/etc/ImageMagick-6
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/etc/ImageMagick-7
     DESTINATION share/${HARBOUR_APP_NAME}/etc)
 
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/lib/ImageMagick-6.9.12
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/lib/ImageMagick-7.1.2
     DESTINATION share/${HARBOUR_APP_NAME}/lib
     FILES_MATCHING PATTERN "*.so" PATTERN "*.la" PATTERN "*.xml")
 
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/share/ImageMagick-6
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/share/ImageMagick-7
     DESTINATION share/${HARBOUR_APP_NAME}/share)
 
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/lib/libgphoto2_port
