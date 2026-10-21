@@ -138,11 +138,11 @@ add_dependencies(ImageMagick::ImageMagick ImageMagick)
 
 set(x265_LIBRARY
     ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx265.so
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx265.so.199)
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx265.so.217)
 
 ExternalProject_Add(x265
-    URL "${CMAKE_CURRENT_SOURCE_DIR}/x265_3.5.tar.gz"
-    URL_HASH SHA256=e70a3335cacacbba0b3a20ec6fecd6783932288ebc8163ad74bcc9606477cae8
+    URL "${CMAKE_CURRENT_SOURCE_DIR}/x265_4.3.tar.gz"
+    URL_HASH SHA256=83c53e4c8bbb8f1e33ed59e10a7d621d1d7801ca853910c3eb41f038b8ffb121
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
     PATCH_COMMAND sed "s/-mcpu=native//" -i source/CMakeLists.txt
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DENABLE_PIC=ON
