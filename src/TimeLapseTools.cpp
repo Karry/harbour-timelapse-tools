@@ -49,8 +49,7 @@
 #include <QStorageInfo>
 #include <QTranslator>
 
-#include <magick/magick.h>
-#include <magick/image.h>
+#include <Magick++.h>
 
 #include <sstream>
 

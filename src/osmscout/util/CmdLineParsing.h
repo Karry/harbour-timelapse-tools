@@ -25,10 +25,8 @@
 #include <string>
 #include <vector>
 #include <list>
-#include <cassert>
-#include <limits>
-#include <cstring>
 #include <sstream>
+#include <cstdint>
 
 namespace osmscout {
 
