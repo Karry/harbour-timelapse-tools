@@ -29,4 +29,12 @@
 - update Czech translation
 
 * 202*-*-* Lukáš Karas <lukas.karas@centrum.cz> 0.4-1
-- update ffmpeg from 5.0.1 to 7.0.2 to fix build on Ubuntu 24.04
+- update vendored dependencies to fix build on Ubuntu 24.04 and 26.04
+  - ffmpeg 5.0.1 -> 7.0.2
+  - x264 20220721 -> 20261022
+  - x265 3.5 -> 4.3
+  - vid.stab library to latest upstream (2026-10-22)
+  - core TimeLapse tools to latest upstream (2026-10-22)
+  - ImageMagick 6.9.12 -> 7.1.2
+  - libjpeg-turbo 2.1.3 -> 3.2.0
+

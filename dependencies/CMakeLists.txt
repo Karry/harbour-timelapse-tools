@@ -57,15 +57,17 @@ ExternalProject_Add(libgd
 set(libjpeg_LIBRARY
     ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libjpeg.so
     ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libjpeg.so.62
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libjpeg.so.62.3.0)
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libjpeg.so.62.4.0)
 
 ExternalProject_Add(libjpeg
-    URL "${CMAKE_CURRENT_SOURCE_DIR}/libjpeg-turbo-2.1.3.tar.gz"
-    URL_HASH SHA256=467b310903832b033fe56cd37720d1b73a6a3bd0171dbf6ff0b620385f4f76d0
+    URL "${CMAKE_CURRENT_SOURCE_DIR}/libjpeg-turbo-3.2.0.tar.gz"
+    URL_HASH SHA256=6f30092cef9fb839779646608f4ee14ae3cbac989c47fa05e841b0841f09878e
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
         -DCMAKE_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/installroot
+        # Bundled zlib/libspng object libraries are also linked into libturbojpeg.so.
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON
     BUILD_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT} install
     TEST_COMMAND ""
@@ -96,24 +98,25 @@ ExternalProject_Add(libusb
 # ImageMagick
 
 set(ImageMagick_LIBRARY
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-6.Q16.so
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-6.Q16.so.9
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-6.Q16.so.9.0.0
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickCore-6.Q16.so
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickCore-6.Q16.so.7
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickCore-6.Q16.so.7.0.0
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickWand-6.Q16.so
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickWand-6.Q16.so.7
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickWand-6.Q16.so.7.0.0)
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-7.Q16HDRI.so
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-7.Q16HDRI.so.5
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagick++-7.Q16HDRI.so.5.0.0
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickCore-7.Q16HDRI.so
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickCore-7.Q16HDRI.so.10
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickCore-7.Q16HDRI.so.10.0.3
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickWand-7.Q16HDRI.so
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickWand-7.Q16HDRI.so.10
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libMagickWand-7.Q16HDRI.so.10.0.3
+    )
 
 ExternalProject_Add(ImageMagick
-    URL "${CMAKE_CURRENT_SOURCE_DIR}/ImageMagick-6.9.12-50.tar.gz"
-    URL_HASH SHA256=178dcf059963840e35ae034ecb9dc82c8549692c33d98ff0b6a7f3aadc9a1605
+    URL "${CMAKE_CURRENT_SOURCE_DIR}/ImageMagick-7.1.2-34.tar.gz"
+    URL_HASH SHA256=f5163a573a1c1bff16358d0a592b2fb168ad0fd3b9dc5ff57dc7820eebc5cf79
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
     CONFIGURE_COMMAND cmake -E env
         "PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig"
-        "CFLAGS=-I<INSTALL_DIR>/include   -DMAGICKCORE_CONFIGURE_PATH=\\\"/usr/share/harbour-timelapse-tools/etc/ImageMagick-6/\\\" -DMAGICKCORE_LIBRARY_PATH=\\\"/usr/share/harbour-timelapse-tools/lib/ImageMagick-6.9.12/\\\" -DMAGICKCORE_SHARE_PATH=\\\"/usr/share/harbour-timelapse-tools/share/ImageMagick-6/\\\" -DMAGICKCORE_DOCUMENTATION_PATH=\\\"/usr/share/harbour-timelapse-tools/share/doc/ImageMagick-6/\\\""
-        "CPPFLAGS=-I<INSTALL_DIR>/include -DMAGICKCORE_CONFIGURE_PATH=\\\"/usr/share/harbour-timelapse-tools/etc/ImageMagick-6/\\\" -DMAGICKCORE_LIBRARY_PATH=\\\"/usr/share/harbour-timelapse-tools/lib/ImageMagick-6.9.12/\\\" -DMAGICKCORE_SHARE_PATH=\\\"/usr/share/harbour-timelapse-tools/share/ImageMagick-6/\\\" -DMAGICKCORE_DOCUMENTATION_PATH=\\\"/usr/share/harbour-timelapse-tools/share/doc/ImageMagick-6/\\\""
+        "CFLAGS=-g   -O2 -I<INSTALL_DIR>/include -DMAGICKCORE_CONFIGURE_PATH=\\\"/usr/share/harbour-timelapse-tools/etc/ImageMagick-7/\\\" -DMAGICKCORE_LIBRARY_PATH=\\\"/usr/share/harbour-timelapse-tools/lib/ImageMagick-7.1.2/\\\" -DMAGICKCORE_SHARE_PATH=\\\"/usr/share/harbour-timelapse-tools/share/ImageMagick-7/\\\" -DMAGICKCORE_DOCUMENTATION_PATH=\\\"/usr/share/harbour-timelapse-tools/share/doc/ImageMagick-7/\\\""
+        "CPPFLAGS=-g -O2 -I<INSTALL_DIR>/include -DMAGICKCORE_CONFIGURE_PATH=\\\"/usr/share/harbour-timelapse-tools/etc/ImageMagick-7/\\\" -DMAGICKCORE_LIBRARY_PATH=\\\"/usr/share/harbour-timelapse-tools/lib/ImageMagick-7.1.2/\\\" -DMAGICKCORE_SHARE_PATH=\\\"/usr/share/harbour-timelapse-tools/share/ImageMagick-7/\\\" -DMAGICKCORE_DOCUMENTATION_PATH=\\\"/usr/share/harbour-timelapse-tools/share/doc/ImageMagick-7/\\\""
         "LDFLAGS=-L<INSTALL_DIR>/lib -Wl,-rpath=/usr/share/harbour-timelapse-tools/lib"
         <SOURCE_DIR>/configure --prefix <INSTALL_DIR> --with-sysroot=<INSTALL_DIR> --with-modules --without-freetype --disable-openmp
     BUILD_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT}
@@ -124,7 +127,7 @@ ExternalProject_Add(ImageMagick
     )
 
 add_library(ImageMagick::ImageMagick INTERFACE IMPORTED GLOBAL)
-target_include_directories(ImageMagick::ImageMagick INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/installroot/include/ImageMagick-6)
+target_include_directories(ImageMagick::ImageMagick INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/installroot/include/ImageMagick-7)
 target_link_libraries(ImageMagick::ImageMagick INTERFACE "${ImageMagick_LIBRARY}")  # need the quotes to expand list
 # howto pickup CFlags from pkg config file?
 target_compile_options(ImageMagick::ImageMagick INTERFACE -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16)
@@ -135,11 +138,11 @@ add_dependencies(ImageMagick::ImageMagick ImageMagick)
 
 set(x265_LIBRARY
     ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx265.so
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx265.so.199)
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx265.so.217)
 
 ExternalProject_Add(x265
-    URL "${CMAKE_CURRENT_SOURCE_DIR}/x265_3.5.tar.gz"
-    URL_HASH SHA256=e70a3335cacacbba0b3a20ec6fecd6783932288ebc8163ad74bcc9606477cae8
+    URL "${CMAKE_CURRENT_SOURCE_DIR}/x265_4.3.tar.gz"
+    URL_HASH SHA256=83c53e4c8bbb8f1e33ed59e10a7d621d1d7801ca853910c3eb41f038b8ffb121
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
     PATCH_COMMAND sed "s/-mcpu=native//" -i source/CMakeLists.txt
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DENABLE_PIC=ON
@@ -153,11 +156,11 @@ ExternalProject_Add(x265
 
 set(x264_LIBRARY
     ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx264.so
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx264.so.164)
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libx264.so.165)
 
 ExternalProject_Add(x264
-    URL "${CMAKE_CURRENT_SOURCE_DIR}/x264-master20220721.tar.bz2"
-    URL_HASH SHA256=876383c0bcc7bde562d2db350c4754114e8c4c0ce1228018cad0cc5f4ce1253b
+    URL "${CMAKE_CURRENT_SOURCE_DIR}/x264-master20261022.tar.bz2"
+    URL_HASH SHA256=b5989ad76e0022b114e42162780a28e202dd525b42eede49bb8a025b373fcab4
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
     CONFIGURE_COMMAND cmake -E env
         "PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig"
@@ -186,7 +189,7 @@ ExternalProject_Add(ffmpeg
         "CFLAGS=-I<INSTALL_DIR>/include"
         "CPPFLAGS=-I<INSTALL_DIR>/include"
         "LDFLAGS=-L<INSTALL_DIR>/lib -Wl,-rpath=/usr/share/harbour-timelapse-tools/lib"
-        <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-x86asm --enable-gpl --enable-libx264 --enable-libx265
+        <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-x86asm --enable-gpl --enable-libx264 --enable-libx265 --disable-doc
     BUILD_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT} install
     TEST_COMMAND ""
@@ -198,10 +201,10 @@ ExternalProject_Add(ffmpeg
 # vidstab
 
 set(vidstab_LIBRARY
-    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libvidstab.so.1.2)
+    ${CMAKE_CURRENT_BINARY_DIR}/installroot/lib/libvidstab.so.1.4)
 
 ExternalProject_Add(vidstab
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DUSE_OMP=OFF
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DUSE_OMP=OFF -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     URL "${CMAKE_CURRENT_SOURCE_DIR}/vidstab"
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
     BUILD_BYPRODUCTS ${vidstab_LIBRARY}
@@ -304,7 +307,7 @@ ExternalProject_Add(TimeLapse
     )
 
 # older CMake is complaining when include did not exist at configure time
-execute_process(COMMAND mkdir -p "${CMAKE_CURRENT_BINARY_DIR}/installroot/include/ImageMagick-6")
+execute_process(COMMAND mkdir -p "${CMAKE_CURRENT_BINARY_DIR}/installroot/include/ImageMagick-7")
 
 add_library(TimeLapse::TimeLapse INTERFACE IMPORTED GLOBAL)
 target_include_directories(TimeLapse::TimeLapse INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/installroot/include)
