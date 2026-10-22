@@ -82,10 +82,8 @@ desktop-file-install --delete-original       \
   --dir %{buildroot}%{_datadir}/applications             \
    %{buildroot}%{_datadir}/applications/*.desktop
 
-## Jolla harbour rules:
-
-# -- ship all shared unallowed libraries with the app
-mkdir -p %{buildroot}%{_datadir}/%{name}/lib
+# find-debuginfo.sh looking just for files with executable flag
+find %{buildroot}%{_datadir}/%{name}/lib -type f -name "*.so*" -exec chmod +x {} \;
 
 # << install post
 
