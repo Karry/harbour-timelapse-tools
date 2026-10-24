@@ -201,13 +201,13 @@ void AssemblyProcess::start(const QmlTimeLapseAssembly::AssemblyParams params) {
   if (params.blendFrames) {
     if (params.blendBeforeResize) {
       *pipeline << new BlendFramePrepare(&resources->verboseOutput, params.frameCount());
-      *pipeline << new ResizeFrame(&resources->verboseOutput, width, height, params.adaptiveResize);
+      *pipeline << new ResizeFrame(&resources->verboseOutput, width, height, params.adaptiveResize, params.resizeFilterType);
     } else {
-      *pipeline << new ResizeFrame(&resources->verboseOutput, width, height, params.adaptiveResize);
+      *pipeline << new ResizeFrame(&resources->verboseOutput, width, height, params.adaptiveResize, params.resizeFilterType);
       *pipeline << new BlendFramePrepare(&resources->verboseOutput, params.frameCount());
     }
   } else {
-    *pipeline << new ResizeFrame(&resources->verboseOutput, width, height, params.adaptiveResize);
+    *pipeline << new ResizeFrame(&resources->verboseOutput, width, height, params.adaptiveResize, params.resizeFilterType);
     *pipeline << new FramePrepare(&resources->verboseOutput, params.frameCount());
   }
   *pipeline << new WriteFrame(QDir(resources->dir.path()), &resources->verboseOutput, false);

@@ -31,6 +31,8 @@
 #include <QTextStream>
 #include <QThread>
 
+#include <MagickCore/resample.h>
+
 #include <cstdio>
 
 class AssemblyProcess;
@@ -79,7 +81,8 @@ public:
     bool blendFrames=false;
     bool stabilize=false;
     bool blendBeforeResize=false;
-    bool adaptiveResize=true;
+    bool adaptiveResize=false;
+    MagickCore::FilterType resizeFilterType = MagickCore::FilterType::TriangleFilter;
 
     int frameCount() const {
       return length * fps;
