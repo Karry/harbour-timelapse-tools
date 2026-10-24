@@ -189,11 +189,7 @@ ExternalProject_Add(ffmpeg
         "CFLAGS=-I<INSTALL_DIR>/include"
         "CPPFLAGS=-I<INSTALL_DIR>/include"
         "LDFLAGS=-L<INSTALL_DIR>/lib -Wl,-rpath=/usr/share/harbour-timelapse-tools/lib"
-<<<<<<< HEAD
-        <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-x86asm --enable-gpl --enable-libx264 --enable-libx265 --disable-doc
-=======
-        <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-x86asm --disable-libdrm --enable-gpl --enable-libx264 --enable-libx265
->>>>>>> 248dcd4 (distribute ffmpeg as private executable)
+        <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-x86asm --disable-libdrm --disable-doc --enable-gpl --enable-libx264 --enable-libx265
     BUILD_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} -j${CPU_COUNT} install
     TEST_COMMAND ""
