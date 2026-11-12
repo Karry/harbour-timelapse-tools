@@ -28,7 +28,7 @@
 - show camera shutter speed during capturing
 - update Czech translation
 
-* 202*-*-* Lukáš Karas <lukas.karas@centrum.cz> 0.4-1
+* 2026-11-12 Lukáš Karas <lukas.karas@centrum.cz> 0.4-1
 - update vendored dependencies to fix build on Ubuntu 24.04 and 26.04
   and provide latest improvements and bug fixes
   - ffmpeg 5.0.1 -> 7.0.2
