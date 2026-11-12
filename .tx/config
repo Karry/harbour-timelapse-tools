@@ -1,7 +1,7 @@
 [main]
 host = https://www.transifex.com
 
-[sailfish-os-timelapse-tools.ents]
+[o:osm-scout:p:sailfish-os-timelapse-tools:r:ents]
 file_filter = translations/<lang>.ts
 source_file = translations/en.ts
 source_lang = en
