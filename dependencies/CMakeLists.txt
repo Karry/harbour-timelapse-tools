@@ -184,6 +184,8 @@ ExternalProject_Add(ffmpeg
     URL "${CMAKE_CURRENT_SOURCE_DIR}/ffmpeg-7.0.2.tar.xz"
     URL_HASH SHA256=8646515b638a3ad303e23af6a3587734447cb8fc0a0c064ecdb8e95c4fd8b389
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
+    # The Sailfish ARM assembler rejects numeric local labels with a leading zero.
+    PATCH_COMMAND sed -i -e "s/01:/1:/" -e "s/01b/1b/g" libavcodec/arm/mlpdsp_armv5te.S
     CONFIGURE_COMMAND cmake -E env
         "PKG_CONFIG_PATH=<INSTALL_DIR>/lib/pkgconfig"
         "CFLAGS=-I<INSTALL_DIR>/include"
