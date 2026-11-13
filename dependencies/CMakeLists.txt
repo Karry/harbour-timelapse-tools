@@ -145,7 +145,9 @@ ExternalProject_Add(x265
     URL_HASH SHA256=83c53e4c8bbb8f1e33ed59e10a7d621d1d7801ca853910c3eb41f038b8ffb121
     INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/installroot"
     PATCH_COMMAND sed "s/-mcpu=native//" -i source/CMakeLists.txt
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DENABLE_PIC=ON
+    # -ffast-math makes gcc emit calls to glibc libmvec (libmvec.so.1), which is not allowed by Harbour;
+    # presetting the cache variable skips x265's check that would enable the flag.
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DENABLE_PIC=ON -DCC_HAS_FAST_MATH=OFF
     SOURCE_SUBDIR "source"
     BUILD_BYPRODUCTS ${x265_LIBRARY}
     TEST_COMMAND ""
