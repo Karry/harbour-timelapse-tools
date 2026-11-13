@@ -232,7 +232,7 @@ install(FILES
     ${DEP_LIBS}
     DESTINATION share/${HARBOUR_APP_NAME}/lib)
 
-install(FILES
+install(PROGRAMS
     ${CMAKE_CURRENT_BINARY_DIR}/dependencies/installroot/bin/ffmpeg
     DESTINATION share/${HARBOUR_APP_NAME}/libexec)
 
