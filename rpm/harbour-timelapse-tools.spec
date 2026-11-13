@@ -10,7 +10,7 @@ Name:       harbour-timelapse-tools
 
 # don't setup rpm requires
 # list here all the libraries your RPM installs
-%define __requires_exclude ^ld-linux|libMagick*|libgphoto2*|libtimelapse.so|libv4l*|libvidstab.so.*|libgd.so.*|libjpeg.so.*|libltdl.so.*|libusb-1.0.so.*$
+%define __requires_exclude ^ld-linux|libMagick*|libgphoto2*|libtimelapse.so|libv4l*|libvidstab.so.*|libgd.so.*|libjpeg.so.*|libltdl.so.*|libusb-1.0.so.*|libx264.so.*|libx265.so.*$
 
 # skip brp-remove-la-files (and other post-install scripts) to keep *.la files in the ImageMagick lib directory,
 # because they are needed to find the coders
